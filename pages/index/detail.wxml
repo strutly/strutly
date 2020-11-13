@@ -1,0 +1,56 @@
+<include src="/pages/template/error.wxml"></include>
+<include src="/pages/template/auth.wxml"></include>
+<view class="container">  
+  <view class="card">
+    <view class="card-head">
+      <image class="head-image" src="/images/head.jpg"></image>
+      <view class="card-des">
+        <view class="card-nickname">{{detail.miniUser.nickName}}</view>
+        <view class="card-time">{{detail.createTime}}</view>
+      </view>        
+    </view>
+    <view class="card-content">{{detail.msg}}</view>
+    <view class="card-images">
+      <view class="image-item {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}" wx:for="{{detail.imgs}}" wx:for-item="src">
+        <image class="card-image {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src}}"></image>
+      </view>         
+    </view>
+    <view class="card-handles">
+      <view class="handle-item" bindtap="like">
+        <image src="/images/like{{like?1:0}}.png"></image>
+        <view>{{detail.counts[1]?detail.counts[1].length:0}}</view>
+      </view>
+      <view class="handle-item" bindtap="comment">
+        <image src="/images/comment.png"></image>
+        <view>{{detail.counts[2]?detail.counts[2].length:0}}</view>
+      </view>
+      <view class="handle-item">
+        <button class="share" open-type='share' title="{{detail.msg}}">
+          <image src="/images/share0.png"></image>          
+        </button>
+      </view>
+    </view>
+    <view class="card-likes" wx:if="{{detail.counts[1]}}">
+      <image class="like-image" src="/images/like1.png"></image>
+      <view class="like-name" wx:for="{{detail.counts[1]||[]}}">{{item.nickName}}</view>
+    </view>
+  </view>
+  <view class="card-comments">
+    <view class="comment-item" wx:for="{{detail.counts[2]||[]}}">
+      <view class="comment-head">
+        <image class="comment-image" src="{{item.avatarUrl}}"></image>
+        <view class="comment-des">
+          <view class="comment-nickname">{{item.nickName}}</view>
+          <view class="comment-time">{{item.createTime}}</view>
+        </view> 
+      </view>
+      <view class="comment-content" bindtap="comment" data-oid="{{item.uid}}" data-othername="{{item.nickName}}">
+        {{item.content}}
+      </view>
+    </view>    
+  </view>
+  
+  <view class="comment-box" wx:if="{{comment}}">
+    <input class="comment" value="{{content}}" focus="{{comment}}" bindblur="giveup" type="text" placeholder="{{otherName?'回复'+otherName:'评论'}}" bindconfirm="submit" confirm-type="send"/>
+  </view>
+</view>

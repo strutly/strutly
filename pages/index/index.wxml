@@ -1,0 +1,33 @@
+<include src="/pages/template/auth.wxml"></include>
+<include src="/pages/template/error.wxml"></include>
+<!--index.wxml-->
+<view class="cards">  
+  <view class="card  {{isIphoneX ?'cards-iphonex':''}}" wx:for="{{datas}}" wx:for-item="item">
+    <view class="card-head">
+      <image class="head-image" src="{{item.miniUser.avatarUrl}}"></image>
+      <view class="card-des">
+        <view class="card-nickname">{{item.miniUser.nickName}}</view>
+        <view class="card-time">{{item.createTime}}</view>
+      </view>        
+    </view>    
+    <view bindtap="toUrl" data-url="/pages/index/detail?id={{item.id}}">
+      <view class="card-content">{{item.msg}}</view>
+      <view class="card-images">
+        <view class="image-item {{item.imgs.length==1?'image-one':''}} {{item.imgs.length==2?'image-two':''}}" wx:for="{{item.imgs}}" wx:for-item="src" wx:if="{{index<3}}">
+          <image class="card-image {{item.imgs.length==1?'image-one':''}} {{item.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src}}"></image>
+          <view class="image-delete-box" wx:if="{{item.imgs.length>3 && index==2}}">
+            <image src="/images/more.png" class="image-delete"></image>
+            <text class="image-more">{{item.imgs.length-3}}</text>
+          </view>
+        </view>         
+      </view>
+    </view>
+  </view>
+  <view class="wrapper" wx:if="{{endline}}">
+        <text class="line"></text>
+        <text class="line-msg">我是有底线的</text>
+        <text class="line"></text>
+    </view>  
+</view>
+<include src="/pages/template/tab.wxml"></include>
+

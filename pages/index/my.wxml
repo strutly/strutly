@@ -1,0 +1,291 @@
+<view class="head">
+  <view class="personal">
+    <image class="headimg" src="/images/head.jpg"></image>
+    <view class="nickname">青梦蓝宇</view>
+    <view class="follow" bindtap="follow" wx:if="{{follow}}">
+      <image class="follow-image" src="/images/follow{{follow}}.png"></image>
+      <text>关注Ta</text>
+    </view>
+    <view class="my-list" bindtap="follow"  wx:else>
+      <view class="my-item" bindtap="toUrl" data-url="/pages/index/fans">
+        <view>我的粉丝</view>
+        <view class="my-num">98</view>
+      </view>
+      <view class="my-item" bindtap="toUrl" data-url="/pages/index/fans">
+        <view>我的关注</view>
+        <view class="my-num">98</view>
+      </view>
+      <view class="my-item" bindtap="toUrl" data-url="/pages/index/comment">
+        <view>我的评论</view>
+        <view class="my-num">79</view>
+      </view>
+    </view>
+  </view>
+  
+</view>
+
+  <view class="content">
+    <view class="panel">
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby12.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby13.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby14.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>   
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby15.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="panel">
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby17.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby11.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby12.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby13.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>   
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby15.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="panel">
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby14.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby17.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby14.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>   
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby12.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    </view>
+
+
+    <view class="panel">
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>   
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="panel">
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>   
+    
+      <view class="media-box">
+        <view class="media-hd">
+          <image mode="aspectFill" src="http://pic.strutly.cn/baby18.jpg"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">10月28日</view>
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+        </view>
+      </view>
+    </view>
+
+</view>
+
+<include src="/pages/template/tab.wxml"></include>

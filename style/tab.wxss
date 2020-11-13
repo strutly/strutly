@@ -1,0 +1,56 @@
+/**index.wxss**/
+.tab{
+  z-index: 9999999;
+  display: flex;
+  position: fixed;
+  height: 120rpx;
+  text-align: center;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #f8f8f8;
+  align-items: center;  
+  border-top: 1px solid #e3e3e3;
+}
+.tab-item{
+  flex:1;  
+}
+.tab-item:first-child{
+  padding-left:20rpx;
+}
+.tab-item:last-child{
+  padding-right:20rpx;
+}
+.tab-image{
+  width: 48rpx;
+  height: 48rpx;
+  display: block;
+  margin: 0 auto;  
+}
+
+.publish{
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 88rpx;
+}
+.tab-text{
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #666;
+  display: inherit;
+}
+.tab-active{
+  color:#FFB13B;
+}
+.tab-iphonex-button {
+  bottom:48rpx!important;
+}
+ 
+.tab-iphonex-button::after {
+  content: ' ';
+  position: fixed;
+  bottom: 0!important;
+  height: 48rpx!important;
+  width: 100%;
+  background: #f8f8f8;
+} 

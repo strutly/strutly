@@ -1,0 +1,49 @@
+<include src="/pages/template/error.wxml"></include>
+<view class="fans-list">  
+  <view class="fans-item">
+    <view class="fans-head"><image src="/images/headimg.png"></image></view>
+    <view class="fans-nickName">青梦蓝宇</view>
+    <view class="fans-follow-time">关注时间:2012-09-08</view>
+    <view class="fans-follow" bindtap="follow">
+      <image src="/images/follow.png"></image>
+      <text>关注Ta</text>
+    </view>
+  </view>
+  <view class="fans-item">
+    <view class="fans-head"><image src="/images/headimg.png"></image></view>
+    <view class="fans-nickName">青梦蓝宇</view>
+    <view class="fans-follow-time">关注时间:2012-09-08</view>
+    <view class="fans-follow" bindtap="follow">
+      <image src="/images/follow.png"></image>
+      <text>关注Ta</text>
+    </view>
+  </view>
+  <view class="fans-item">
+    <view class="fans-head"><image src="/images/head.jpg"></image></view>
+    <view class="fans-nickName">青梦蓝宇</view>
+    <view class="fans-follow-time">关注时间:2012-09-08</view>
+    <view class="fans-follow" bindtap="follow">
+      <image src="/images/follow1.png"></image>
+      <text>已关注</text>
+    </view>
+  </view>
+  <view class="fans-item">
+    <view class="fans-head"><image src="/images/head.jpg"></image></view>
+    <view class="fans-nickName">青梦蓝宇</view>
+    <view class="fans-follow-time">关注时间:2012-09-08</view>
+    <view class="fans-follow" bindtap="follow">
+      <image src="/images/follow.png"></image>
+      <text>关注Ta</text>
+    </view>
+  </view>
+</view>
+
+
+<view class="prompt-box" wx:if="{{prompt}}">
+  <view class="prompt-icon">
+      <image src="/images/no-data.png"></image>
+  </view>
+  <view class="prompt-msg">您还没有粉丝呢!</view>
+  <view class="prompt-msg">赶快去主页逛逛吧！</view>
+  <view bindtap="back" class="prompt-btn">去主页看看</view>
+</view>

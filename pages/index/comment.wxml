@@ -1,0 +1,81 @@
+<include src="/pages/template/auth.wxml"></include>
+
+<view class="cards">  
+  <view class="card">
+    <view class="card-head">
+      <image class="head-image" src="/images/top.png"></image>
+      <view class="card-des">
+        <view class="card-nickname">{{detail.nickName}}</view>
+        <view class="card-time">{{detail.createTime}}</view>
+      </view>        
+    </view>
+    <view class="card-content">{{detail.msg}}</view>
+    <view class="media-box">
+        <view class="media-hd">
+          <image src="https://gridpic.tsing-tec.com/3463142a-24b9-4f10-a214-3adf25e6980f.jpg"></image>
+        </view>
+        <view class="media-bd">          
+          <view class="media-des">天是真宝宝出生的第一天哦</view>
+          
+        </view>
+      </view>
+  </view>
+  <view class="card">
+    <view class="card-head">
+      <image class="head-image" src="/images/top.png"></image>
+      <view class="card-des">
+        <view class="card-nickname">{{detail.nickName}}</view>
+        <view class="card-time">{{detail.createTime}}</view>
+      </view>        
+    </view>
+    <view class="card-content">{{detail.content}}</view>
+    <view class="media-box">
+        <view class="media-hd">
+          <image src="https://gridpic.tsing-tec.com/3463142a-24b9-4f10-a214-3adf25e6980f.jpg"></image>
+        </view>
+        <view class="media-bd">          
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+          
+        </view>
+      </view>
+  </view>
+  <view class="card">
+    <view class="card-head">
+      <image class="head-image" src="/images/top.png"></image>
+      <view class="card-des">
+        <view class="card-nickname">{{detail.nickName}}</view>
+        <view class="card-time">{{detail.createTime}}</view>
+      </view>        
+    </view>
+    <view class="card-content">{{detail.content}}</view>
+    <view class="media-box">
+        <view class="media-hd">
+          <image src="https://gridpic.tsing-tec.com/3463142a-24b9-4f10-a214-3adf25e6980f.jpg"></image>
+        </view>
+        <view class="media-bd">          
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+          
+        </view>
+      </view>
+  </view>
+  <view class="card">
+    <view class="card-head">
+      <image class="head-image" src="/images/top.png"></image>
+      <view class="card-des">
+        <view class="card-nickname">{{detail.nickName}}</view>
+        <view class="card-time">{{detail.createTime}}</view>
+      </view>        
+    </view>
+    <view class="card-content">{{detail.content}}</view>
+    <view class="media-box">
+        <view class="media-hd">
+          <image src="https://gridpic.tsing-tec.com/3463142a-24b9-4f10-a214-3adf25e6980f.jpg"></image>
+        </view>
+        <view class="media-bd">          
+          <view class="media-des">天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！今天是真宝宝出生的第一天哦，长得有点难看，哈哈！（最多不超过150字)</view>
+          
+        </view>
+      </view>
+  </view>
+  
+</view>
