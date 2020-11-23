@@ -1,11 +1,11 @@
 //app.js
 
 const util = require('./utils/util.js');
-
-
+const api = require('./config/api')
+require('./common')
 App({
   globalData:{
-
+    num:0
   },
   onLaunch: function () {
     var that = this;
@@ -21,6 +21,7 @@ App({
               wx.setStorageSync('token', result.data.token);
               wx.setStorageSync('uid', result.data.id);
               wx.setStorageSync('ifAuth', true);
+              
             }else{
               wx.setStorageSync('ifAuth', false);
             }
@@ -48,22 +49,6 @@ App({
       }
     })
   },
-  switchTabbar: function (e) {
-    let tabs = ['/pages/index/index','/pages/index/my'];
-    let i = e.currentTarget.dataset.index;
-    let index = e.currentTarget.dataset.stu;
-    if(i!=index){
-      wx.reLaunch({
-        url: tabs[i],
-      })
-    }
-  },
-  toUrl(e){
-    let url = e.currentTarget.dataset.url;
-    if(url){
-      wx.navigateTo({
-        url: url,
-      })
-    }    
-  }  
+  
+    
 })
