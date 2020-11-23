@@ -34,7 +34,7 @@ const app = getApp();
 var that;
 Page({
   data:{
-    open:0,
+    open:1,
     msg:"",
     images:[],
     delete:false
@@ -66,7 +66,9 @@ Page({
     })    
   },
   remove(e){
-    let index = e.target.dataset.index;
+    console.log(e)
+    let index = e.currentTarget.dataset.index;
+    console.log(index)
     let images = that.data.images;
     images.splice(index,1);
     console.log(images)
@@ -74,26 +76,40 @@ Page({
       images:images
     })
   },
-  previewImage: function (e) {
-    var current = e.target.dataset.src;
+  previewImage(e) {
+    var current = e.currentTarget.dataset.src;
     wx.previewImage({
       current: current, // 当前显示图片的http链接  
       urls: that.data.images // 需要预览的图片http链接列表  
     })
   },
   addImg(){
+    that.setData({
+      delete:false
+    })
     didPressChooesImage(that);
   },
   form(){
+    if(that.data.msg==""){
+      return util.warn(that,"请输入内容后再提交");
+    }
+    if(that.data.images.length<1){
+      return util.warn(that,"请至少添加一张图片");
+    }
     let data = {
       msg:that.data.msg,
       open:that.data.open,
       imgs:that.data.images
     };
     util.request(api.Record,JSON.stringify(data),"POST").then(function(res){
-      wx.navigateTo({
-        url: '/pages/index/index',
-      })
+      if(res.code==0){
+        wx.navigateTo({
+          url: '/pages/index/index',
+        })
+      }else{
+        util.warn(that,res.errMsg);
+      }
+      
     })
   },
   bindTextAreaBlur(e){
@@ -132,7 +148,7 @@ function didPressChooesImage(that) {
               console.log('提示: wx.chooseImage 目前微信官方尚未开放获取原图片名功能(2020.4.22)');
               console.log('file url is: ' + res.fileURL);
           }, (error) => {
-              console.error('error: ' + JSON.stringify(error));
+              util.warn(that,"上传失败!请重新上传!")
           },
           
           null,

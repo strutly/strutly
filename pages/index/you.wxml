@@ -1,0 +1,35 @@
+<view class="head">
+  <view class="personal">
+    <image class="headimg" src="{{userInfo.miniUser.avatarUrl}}"></image>
+    <view class="nickname">{{userInfo.miniUser.nickName}}</view>
+    <view class="follow" bindtap="follow">
+      <image class="follow-image" src="/images/follow{{userInfo.follow?1:0}}.png"></image>
+      <text>{{userInfo.follow?"已关注":"关注Ta"}}</text>
+    </view>
+  </view>  
+</view>
+
+  <view class="content">
+    <view class="panel">
+      <view class="media-box" wx:for="{{datas}}"  data-url="/pages/index/detail?id={{item.id}}" bindtap="toUrl">
+        <view class="media-hd">
+          <image mode="aspectFill" src="{{item.imgs[0]}}"></image>
+        </view>
+        <view class="media-bd">
+          <view class="media-title">{{item.createTime}}</view>
+          <view class="media-des">{{item.msg}}</view>
+        </view>
+      </view>
+    
+       
+    
+      
+    </view>
+
+    
+
+    
+
+
+</view>
+

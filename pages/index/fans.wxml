@@ -1,49 +1,18 @@
+<wxs src="../../utils/Tools.wxs" module="tools"/>
 <include src="/pages/template/error.wxml"></include>
+
 <view class="fans-list">  
-  <view class="fans-item">
-    <view class="fans-head"><image src="/images/headimg.png"></image></view>
-    <view class="fans-nickName">青梦蓝宇</view>
-    <view class="fans-follow-time">关注时间:2012-09-08</view>
-    <view class="fans-follow" bindtap="follow">
-      <image src="/images/follow.png"></image>
-      <text>关注Ta</text>
-    </view>
-  </view>
-  <view class="fans-item">
-    <view class="fans-head"><image src="/images/headimg.png"></image></view>
-    <view class="fans-nickName">青梦蓝宇</view>
-    <view class="fans-follow-time">关注时间:2012-09-08</view>
-    <view class="fans-follow" bindtap="follow">
-      <image src="/images/follow.png"></image>
-      <text>关注Ta</text>
-    </view>
-  </view>
-  <view class="fans-item">
-    <view class="fans-head"><image src="/images/head.jpg"></image></view>
-    <view class="fans-nickName">青梦蓝宇</view>
-    <view class="fans-follow-time">关注时间:2012-09-08</view>
-    <view class="fans-follow" bindtap="follow">
-      <image src="/images/follow1.png"></image>
-      <text>已关注</text>
-    </view>
-  </view>
-  <view class="fans-item">
-    <view class="fans-head"><image src="/images/head.jpg"></image></view>
-    <view class="fans-nickName">青梦蓝宇</view>
-    <view class="fans-follow-time">关注时间:2012-09-08</view>
-    <view class="fans-follow" bindtap="follow">
-      <image src="/images/follow.png"></image>
-      <text>关注Ta</text>
+  <view class="fans-item" wx:for="{{fans}}" wx:key>
+    <view bindtap="toUrl" data-url="/pages/index/you?uid={{item.mine.id}}">
+      <view class="fans-head"><image src="{{item.mine.avatarUrl}}"></image></view>
+      <view class="fans-nickName">{{item.mine.nickName}}</view>
+      <view class="fans-follow-time">关注时间:{{tools.dateFormat(item.createTime,'yyyy-MM-dd')}}</view>
+    </view>    
+    <view class="fans-follow" bindtap="follow" data-uid="{{item.mine.id}}" data-index="{{index}}">
+      <image src="/images/follow{{tools.indexOf(follows,item.mine.id)?'1':''}}.png"></image>
+      <text>{{tools.indexOf(follows,item.mine.id)?'已关注':'关注Ta'}}</text>
     </view>
   </view>
 </view>
+<include src="/pages/template/no-data.wxml"></include>
 
-
-<view class="prompt-box" wx:if="{{prompt}}">
-  <view class="prompt-icon">
-      <image src="/images/no-data.png"></image>
-  </view>
-  <view class="prompt-msg">您还没有粉丝呢!</view>
-  <view class="prompt-msg">赶快去主页逛逛吧！</view>
-  <view bindtap="back" class="prompt-btn">去主页看看</view>
-</view>

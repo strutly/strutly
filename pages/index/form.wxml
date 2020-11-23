@@ -1,3 +1,4 @@
+<include src="/pages/template/error.wxml"></include>
 <view class="container">
   <textarea bindblur="bindTextAreaBlur" class="content" auto-height="true" style="min-height:200rpx;" placeholder="开始发表您的记录..." />
   <view class="image-box">

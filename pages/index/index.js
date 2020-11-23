@@ -6,7 +6,11 @@ Page({
   data: {
     index:0,
     endline:false,
-    datas:[]
+    datas:[],
+    num:app.globalData.num,
+    black:[],
+    uid:wx.getStorageSync('uid'),
+    confirmMsg:"确认将Ta关进小黑屋7天吗?"
   },  
   onLoad: function (options) {
     that = this;
@@ -22,10 +26,66 @@ Page({
         }
       }    
     })
-    that.listRecord(0);　 
+    util.request(api.Black,{},"get").then(res=>{
+      console.log(res);
+      if(res.code==0){
+        that.setData({
+          black:res.data
+        })
+      }
+      that.listRecord(0);
+    }).catch(err=>{
+      console.log(err);
+      that.listRecord(0);
+    })
+    
+  },
+  onReady(){
+    let syncTime = wx.getStorageSync('syncTime')||new Date().getTime();
+    let time = new Date().getTime();
+    let ifAuth = wx.getStorageSync('ifAuth')||false;
+    /**小小的同步一下用户数据吧!*/
+    if(ifAuth && syncTime <= time){
+      util.getUserInfo().then(user=>{
+        console.log(user)
+        util.request(api.MyInfo,user.userInfo,"POST").then(res=>{
+          if(res.code==0){
+            wx.setStorageSync('syncTime', time + 7*24*60*60);
+          }
+        })
+      })
+    }    
+  },
+  home(e){
+    let ifAuth = wx.getStorageSync('ifAuth')||false;
+    if(ifAuth){
+      let uid = e.currentTarget.dataset.uid;
+      let id = wx.getStorageSync('uid');
+      let toUrl = "/pages/index/my";
+      if(uid != id){
+        toUrl = "/pages/index/you?uid="+uid;
+      }
+      wx.navigateTo({
+        url: toUrl,
+      })
+    }else{
+      that.setData({
+        auth:true,
+        callBack:function(){
+          that.home(e)
+        }
+      })
+    }    
+  },
+  black(datas){
+    let black = that.data.black;
+    datas = datas.filter(item => black.indexOf(item.miniUser.id)<0)
+    that.setData({
+      datas:datas
+    })
   },
   listRecord(pageNo){
-    let datas = that.data.datas;
+    let datas = that.data.datas;    
     util.request(api.Record,{pageNo:pageNo},"GET").then((res) => {
       if((pageNo==0)&&(res.data==null || res.data.length==0)){
         that.setData({
@@ -35,11 +95,11 @@ Page({
           that.setData({
             endline:true
           })
-      }else{      
+      }else{        
         that.setData({
-          pageNo:pageNo,
-          datas:datas.concat(res.data)
+          pageNo:pageNo          
         })
+        that.black(datas.concat(res.data))
       }
     }).catch(err=>{
       that.setData({
@@ -99,9 +159,7 @@ Page({
         that.data.callBack(); 
       });
     })       
-  },
-  switchTabbar: app.switchTabbar,
-  toUrl:app.toUrl,
+  },  
   refresh(){
     that.setData({
       prompt:false
@@ -114,5 +172,39 @@ Page({
       let pageNo = that.data.pageNo + 1;
       that.listRecord(pageNo);
     }    
+  },
+  confirm(e){
+    console.log(e);
+    let ifAuth = wx.getStorageSync('ifAuth')||false;
+    let black = that.data.black;
+    if(ifAuth){
+      that.setData({
+        confirm:true
+      })
+      that.yes =()=>{
+        let uid = e.currentTarget.dataset.uid;
+        util.request(api.Black+"/"+uid,{},"POST").then(res=>{
+          console.log(res);
+          black.push(uid);
+          that.setData({
+            confirm:false,
+            black:black
+          })
+          that.black(that.data.datas);
+        })      
+      }
+      that.no =()=>{
+        that.setData({
+          confirm:false
+        })
+      }
+    }else{
+      that.setData({
+        auth:true,
+        callBack:function(){
+          that.confirm(e)
+        }
+      })
+    }
   }
 })

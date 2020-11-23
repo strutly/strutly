@@ -9,5 +9,6 @@
   <view class="tab-item" bindtap="switchTabbar" data-index='1' data-stu="{{index}}">
     <image class="tab-image" src="/images/my{{index}}.png"></image>
     <text class="tab-text {{index==1?'tab-active':''}}">我的</text>
+    <text class="tab-badge" wx:if="{{num>0}}">{{num}}</text>
   </view>
 </view>

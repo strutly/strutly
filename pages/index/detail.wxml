@@ -1,6 +1,7 @@
 <include src="/pages/template/error.wxml"></include>
 <include src="/pages/template/auth.wxml"></include>
-<view class="container">  
+<include src="/pages/template/confirm.wxml"></include>
+<view class="container" wx:if="{{detail}}">  
   <view class="card">
     <view class="card-head">
       <image class="head-image" src="/images/head.jpg"></image>
@@ -12,7 +13,7 @@
     <view class="card-content">{{detail.msg}}</view>
     <view class="card-images">
       <view class="image-item {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}" wx:for="{{detail.imgs}}" wx:for-item="src">
-        <image class="card-image {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src}}"></image>
+        <image  bindtap="previewImage" data-src="{{item.avatarUrl}}" class="card-image {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src}}"></image>
       </view>         
     </view>
     <view class="card-handles">
@@ -32,19 +33,19 @@
     </view>
     <view class="card-likes" wx:if="{{detail.counts[1]}}">
       <image class="like-image" src="/images/like1.png"></image>
-      <view class="like-name" wx:for="{{detail.counts[1]||[]}}">{{item.nickName}}</view>
+      <view class="like-name" wx:for="{{detail.counts[1]||[]}}" data-uid="{{item.uid}}" bindtap="home">{{item.nickName}}</view>
     </view>
   </view>
   <view class="card-comments">
     <view class="comment-item" wx:for="{{detail.counts[2]||[]}}">
-      <view class="comment-head">
+      <view class="comment-head" data-uid="{{item.uid}}" bindtap="home">
         <image class="comment-image" src="{{item.avatarUrl}}"></image>
         <view class="comment-des">
           <view class="comment-nickname">{{item.nickName}}</view>
           <view class="comment-time">{{item.createTime}}</view>
         </view> 
       </view>
-      <view class="comment-content" bindtap="comment" data-oid="{{item.uid}}" data-othername="{{item.nickName}}">
+      <view class="comment-content" bindtap="{{item.uid==uid?'confirm':'comment'}}" data-id="{{item.id}}" data-oid="{{item.uid}}" data-othername="{{item.nickName}}">
         {{item.content}}
       </view>
     </view>    
@@ -54,3 +55,4 @@
     <input class="comment" value="{{content}}" focus="{{comment}}" bindblur="giveup" type="text" placeholder="{{otherName?'回复'+otherName:'评论'}}" bindconfirm="submit" confirm-type="send"/>
   </view>
 </view>
+<include src="/pages/template/no-data.wxml"></include>

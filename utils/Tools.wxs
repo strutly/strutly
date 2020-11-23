@@ -4,11 +4,16 @@ var formatNumber = function (n) {
 };
 var regYear = getRegExp("(y+)", "i");
 var dateFormat = function (timestamp, format) {
+  
   if (!format) {
     format = "yyyy-MM-dd hh:mm:ss"
   }
   if (typeof timestamp === "string") {
-    var time = getDate(timestamp);
+    var reg =getRegExp('-','g');// 获取正则表达式，全局替换
+    var str =timestamp.replace(reg,'/');
+
+
+    var time = getDate(str);
     if (!time || time.toUTCString() == "Invalid Date") {
       return '';
     }
@@ -94,7 +99,16 @@ var timeago = function (timestamp) {
     return Y + '-' + M + '-' + D + ' ' + H + ':' + m;
   }
 }
+function indexOf(arr, value) {
+  console.log(arr)
+  console.log(value)
+  if (arr.indexOf(value) < 0) {
+      return false;
+  }
+  return true;  
+}
 module.exports = {
   dateFormat: dateFormat,
-  timeago: timeago
+  timeago: timeago,
+  indexOf:indexOf
 };

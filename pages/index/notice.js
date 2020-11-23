@@ -17,7 +17,7 @@ Page({
   },
   pageComment(pageNo){
     let lists = that.data.lists;
-    util.request(api.Comment,{pageNo:pageNo},"GET").then((res) => {
+    util.request(api.Notice,{pageNo:pageNo},"GET").then((res) => {
       if((pageNo==0)&&(res.data==null || res.data.length==0)){
         that.setData({
           noData:true,
@@ -46,25 +46,9 @@ Page({
       that.pageComment(pageNo);
     }    
   },
-  handleLongPress(e){
-    console.log(e);
-    that.setData({
-      confirm:true
+  onUnload(){
+    util.request(api.Notice,{},"DELETE").then(res=>{
+      app.globalData.num = 0;
     })
-    that.yes =()=>{
-      util.request(api.Comment+"/"+e.currentTarget.dataset.id,{},"DELETE").then(res=>{
-        that.setData({
-          confirm:false
-        })
-        if(res.code!=0){
-          util.warn(that,res.msg)
-        }
-      })      
-    }
-    that.no =()=>{
-      that.setData({
-        confirm:false
-      })
-    }
   }
 })
