@@ -10,22 +10,14 @@ Page({
     index:1,
     user:wx.getStorageSync('userInfo'),
     num:app.globalData.num,
-    myRecords:[]
+    myRecords:[],
+    isIphoneX:wx.getStorageSync('isIphoneX')
   },  
   onLoad: function (options) {
     that = this;
-    wx.getSystemInfo({ 
-      success: function (res) {
-        console.log(res);
-        let modelmes = res.model;
-        if (modelmes.search('iPhone X') != -1) {
-          that.setData({    
-            isIphoneX: true,
-            options:options||{}
-          })
-        }
-      }    
-   });
+    that.setData({    
+      options:options||{}
+    })
    let uid = options.id||wx.getStorageSync('uid');
    console.log(uid);
    util.request(api.MyInfo + "/" + uid,{},"GET").then(res=>{

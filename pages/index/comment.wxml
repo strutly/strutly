@@ -3,7 +3,7 @@
 <include src="/pages/template/error.wxml"></include>
 <wxs src="../../utils/Tools.wxs" module="tools"/>
 <view class="cards">  
-  <view class="card" wx:for="{{lists}}" bindlongpress="handleLongPress" data-id="{{item.id}}" bindtap="toUrl" data-url="/pages/index/detail?id={{item.rid}}" wx:key>
+  <view class="card" wx:for="{{lists}}" bindlongpress="handleLongPress" data-index="{{index}}" bindtap="toUrl" data-url="/pages/index/detail?id={{item.rid}}" wx:key>
     <view class="card-head">
       <image class="head-image" src="{{item.avatarUrl}}"></image>
       <view class="card-des">

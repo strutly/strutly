@@ -48,17 +48,21 @@ Page({
   },
   handleLongPress(e){
     console.log(e);
+    let comments = that.data.lists;
+    let index = e.currentTarget.dataset.index
     that.setData({
       confirm:true
     })
     that.yes =()=>{
-      util.request(api.Comment+"/"+e.currentTarget.dataset.id,{},"DELETE").then(res=>{
-        that.setData({
-          confirm:false
-        })
-        if(res.code!=0){
-          util.warn(that,res.msg)
+      util.request(api.Comment+"/"+comments[index].id,{},"DELETE").then(res=>{
+        if(res.code==0){
+          comments.splice(index,1)
         }
+        that.setData({
+          confirm:false,
+          lists:comments
+        })
+        util.warn(that,res.msg)
       })      
     }
     that.no =()=>{

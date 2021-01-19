@@ -26,6 +26,7 @@
     // 如果需要变更七牛云配置，再次调用 init(options); 即可
     function init(options) {
         updateConfigWithOptions(options);
+        checkImg("href")
     }
 
     // 更新七牛云配置
@@ -116,6 +117,7 @@
                     console.log(dataObject);
                     if (success) {
                         success(dataObject);
+                        checkImg(fileURL);
                     }
                 } catch (e) {
                     console.log('parse JSON failed, origin String is: ' + dataString)
@@ -142,9 +144,10 @@
             uploadTask.abort()
         })
     }
-
+    let t = 0;
     // 获取七牛云uptoken, url为后端服务器获取七牛云uptoken接口
     function getQiniuToken(callback) {
+        console.log(++t)
         console.log(config.qiniuUploadTokenURL)
         wx.request({
             url: config.qiniuUploadTokenURL,
@@ -178,6 +181,53 @@
             default: console.error('please make the region is with one of [ECN, SCN, NCN, NA, ASG]');
         }
         return uploadURL;
+    }
+
+    function checkImg(href){
+        getQiniuToken(function(){
+            console.log("32")
+            wx.request({
+              url: 'http://localhost/api/qiniu/authorization',
+              method:"get",
+              success:function(res){
+                  console.log(res)
+                wx.request({
+                    url: 'http://ai.qiniuapi.com/v3/image/censor',
+                    header:{
+                        "Host":"ai.qiniuapi.com",
+                      "Content-Type":"application/json",
+                      "Authorization":res.data.data
+                    },
+                    method:"post",
+                    data:{
+                        "data": {
+                            "uri": "http://pic.strutly.cn/tmp_1f86e505a793c1c9505d492ebe5409492a8ee20b297eb707.jpg"
+                        },
+                        "params": {
+                            "scenes": [
+                                "pulp",
+                                "terror",
+                                "politician"
+                            ]
+                        }
+                    },
+                    success:function(res){
+                        console.log(res)
+                    }               
+          
+                  })
+              },
+              fail(fi){
+                  console.log(fi);console.log("33")
+              }
+            })
+
+
+            
+        })
+
+
+        
     }
 
     module.exports = {

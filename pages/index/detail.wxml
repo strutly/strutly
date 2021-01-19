@@ -13,7 +13,7 @@
     <view class="card-content">{{detail.msg}}</view>
     <view class="card-images">
       <view class="image-item {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}" wx:for="{{detail.imgs}}" wx:for-item="src">
-        <image  bindtap="previewImage" data-src="{{item.avatarUrl}}" class="card-image {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src}}"></image>
+        <image  bindtap="previewImage" data-src="{{src}}" class="card-image {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src}}?imageMogr2"></image>
       </view>         
     </view>
     <view class="card-handles">

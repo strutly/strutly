@@ -14,7 +14,7 @@
         <view class="my-num">{{userInfo.counts.sum2||0}}</view>
       </view>
       <view class="my-item" bindtap="toUrl" data-url="/pages/index/comment">
-        <view>我的评论{{myRecords.length}}</view>
+        <view>我的评论</view>
         <view class="my-num">{{userInfo.counts.sum3||0}}</view>
       </view>
     </view>    

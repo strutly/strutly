@@ -8,23 +8,16 @@ var that;
 Page({
   data: {
     index:1,
-    follow:1
+    follow:1,
+    isIphoneX:wx.getStorageSync('isIphoneX')
   },  
   onLoad: function (options) {
     console.log(options)
     that = this;
-    wx.getSystemInfo({ 
-      success: function (res) {
-        console.log(res);
-        let modelmes = res.model;
-        if (modelmes.search('iPhone X') != -1) {
-          that.setData({    
-            isIphoneX: true,
-            options:options||{}
-          })
-        }
-      }    
-   });
+    that.setData({
+      options:options||{}
+    })
+
    let uid = options.uid;
    console.log(uid);
    util.request(api.MyInfo + "/" + uid,{},"GET").then(res=>{

@@ -10,21 +10,16 @@ Page({
     num:app.globalData.num,
     black:[],
     uid:wx.getStorageSync('uid'),
-    confirmMsg:"确认将Ta关进小黑屋7天吗?"
+    confirmMsg:"确认将Ta关进小黑屋7天吗?",
+    isIphoneX:wx.getStorageSync('isIphoneX')
   },  
   onLoad: function (options) {
     that = this;
-    wx.getSystemInfo({ 
-      success: function (res) {
-        console.log(res);
-        let modelmes = res.model;
-        if (modelmes.search('iPhone X') != -1) {
-          that.setData({
-            options:options,    
-            isIphoneX: true
-          })
-        }
-      }    
+    console.log(wx.getStorage({
+      key: 'isIphoneX',
+    }))
+    that.setData({
+      options:options
     })
     util.request(api.Black,{},"get").then(res=>{
       console.log(res);
@@ -135,7 +130,6 @@ Page({
       title: '授权中~~',
     })
     if (e.detail.errMsg !== 'getUserInfo:ok') {
-
       wx.hideLoading();
       if (e.detail.errMsg === 'getUserInfo:fail auth deny') {
         util.warn(that,"授权失败");

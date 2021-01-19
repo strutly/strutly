@@ -1,5 +1,6 @@
 const api = require('../config/api.js');
 const log = require('../utils/log.js')
+var wxcode = "";
 const formatTime = date => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -20,41 +21,41 @@ function dateFormat(date, format) {
 	if(date==""||date==null){
 		return "";
 	}
-    if (typeof date === "string") {
-        var mts = date.match(/(\/Date\((\d+)\)\/)/);
-        if (mts && mts.length >= 3) {
-            date = parseInt(mts[2]);
-        }
-    }
-    date = new Date(date.replace(/-/g, "/"));
-    if (!date || date.toUTCString() == "Invalid Date") {
-        return "";
-    }
+  if (typeof date === "string") {
+      var mts = date.match(/(\/Date\((\d+)\)\/)/);
+      if (mts && mts.length >= 3) {
+          date = parseInt(mts[2]);
+      }
+  }
+  date = new Date(date.replace(/-/g, "/"));
+  if (!date || date.toUTCString() == "Invalid Date") {
+      return "";
+  }
 
-    var map = {
-        "M": date.getMonth() + 1, //月份 
-        "d": date.getDate(), //日 
-        "h": date.getHours(), //小时 
-        "m": date.getMinutes(), //分 
-        "s": date.getSeconds(), //秒 
-        "q": Math.floor((date.getMonth() + 3) / 3), //季度 
-        "S": date.getMilliseconds() //毫秒 
-    };
-    format = format.replace(/([yMdhmsqS])+/g, function(all, t){
-        var v = map[t];
-        if(v !== undefined){
-            if(all.length > 1){
-                v = '0' + v;
-                v = v.substr(v.length-2);
-            }
-            return v;
-        }
-        else if(t === 'y'){
-            return (date.getFullYear() + '').substr(4 - all.length);
-        }
-        return all;
-    });
-    return format;
+  var map = {
+      "M": date.getMonth() + 1, //月份 
+      "d": date.getDate(), //日 
+      "h": date.getHours(), //小时 
+      "m": date.getMinutes(), //分 
+      "s": date.getSeconds(), //秒 
+      "q": Math.floor((date.getMonth() + 3) / 3), //季度 
+      "S": date.getMilliseconds() //毫秒 
+  };
+  format = format.replace(/([yMdhmsqS])+/g, function(all, t){
+      var v = map[t];
+      if(v !== undefined){
+          if(all.length > 1){
+              v = '0' + v;
+              v = v.substr(v.length-2);
+          }
+          return v;
+      }
+      else if(t === 'y'){
+          return (date.getFullYear() + '').substr(4 - all.length);
+      }
+      return all;
+  });
+  return format;
 };
 
 
@@ -64,7 +65,7 @@ function dateFormat(date, format) {
  */
 function login() {
   return new Promise(function (resolve, reject) {
-    return getCode().then(function(res){
+    return getCode().then(function(res){  
       return request(api.Login,{code:res},"GET").then(res=>{
         resolve(res);
       }).catch(err=>{
@@ -82,10 +83,12 @@ function login() {
  * 获取code
  */
 function getCode() {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {    
     wx.login({
       success: function (res) {
+        console.log("come getCode")
         if (res.code) {
+          wxcode = res.code;
           resolve(res.code);
         } else {
           reject(res);
@@ -94,7 +97,7 @@ function getCode() {
       fail: function (err) {
         reject(err);
       }
-    });
+    });      
   });
 };
 /**
@@ -133,12 +136,10 @@ function getUserInfo() {
  */
 function auth(){
   return new Promise(function (resolve, reject) {
-    let code  = null;
-    return getCode().then((res) => {
-      code = res;
+    return getCode().then((res) => {      
       return getUserInfo().then(userInfo=>{
         return request(api.Auth,JSON.stringify({
-          code: code,
+          code: res,
           encryptedData: userInfo.encryptedData,
           iv: userInfo.iv,
           signature: userInfo.signature,
@@ -178,7 +179,7 @@ function request(url, data = {}, method = "GET") {
       success: function (res) {
         log.info(res);
         console.log(res);
-        wx.hideLoading();
+        
         if (res.statusCode == 200) {
           /**/
           console.log()
@@ -195,22 +196,28 @@ function request(url, data = {}, method = "GET") {
                 wx.setStorageSync('uid', result.data.id);
                 wx.setStorageSync('ifAuth', true);
                 request(url,data,method).then(function(res){
+                  wx.hideLoading();
                   resolve(res);
                 }).catch(err=>{
+                  wx.hideLoading();
                   console.log(5);
                   reject(err);
                 });             
               }).catch(function(err){
+                wx.hideLoading();
                 console.log(4);
                 reject(err);
               });
             }else{
+              wx.hideLoading();
               reject(res);
             }
           } else {
+            wx.hideLoading();
             resolve(res.data);
           }
         } else {
+          wx.hideLoading();
           reject(res);
         }
       },

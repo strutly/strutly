@@ -1,17 +1,18 @@
 <include src="/pages/template/error.wxml"></include>
+<progress percent="{{progress}}" color="#e75e58" active wx:if="{{upload}}"/>
 <view class="container">
-  <textarea bindblur="bindTextAreaBlur" class="content" auto-height="true" style="min-height:200rpx;" placeholder="开始发表您的记录..." />
+  <textarea bindblur="bindTextAreaBlur" class="content" auto-height="true" value="{{formData.msg}}" style="min-height:200rpx;" placeholder="开始发表您的记录..." />
   <view class="image-box">
-    <view class="image-item" wx:for="{{images}}">
+    <view class="image-item" wx:for="{{formData.imgs}}">
       <image class="image-thumb" bindlongpress="handleLongPress" bindtap="previewImage" mode="aspectFill" data-src="{{item}}" src="{{item}}"></image>
       <view class="image-delete-box {{delete?'':'hide'}}" bindlongpress="handleLongPress" bindtap="remove" data-index="{{index}}"><image src="/images/delete.png" class="image-delete"></image></view>
     </view>
     
-    <view class="image-item" wx:if="{{images.length<9}}">
+    <view class="image-item" wx:if="{{formData.imgs.length<9}}">
       <view class="add" bindtap="addImg"><image class="image-add" src="/images/add.png"></image></view>
     </view>
   </view>
-  <view class="open-switch">是否公开?<view class="switch {{open?'switch-active':''}}" bindtap="open"></view></view>
+  <view class="open-switch">是否公开?<view class="switch {{formData.open?'switch-active':''}}" bindtap="open"></view></view>
   
 </view>
 <view class="push  {{isIphoneX ?'tab-iphonex-button':''}}" bindtap="form">点击发布</view>

@@ -9,6 +9,19 @@ App({
   },
   onLaunch: function () {
     var that = this;
+
+    //获取设备信息
+    wx.getSystemInfo({ 
+      success: function (res) {
+        console.log(res);
+        let modelmes = res.model;
+        if (modelmes.search('iPhone X') != -1) {
+          wx.setStorageSync('isIphoneX', true);
+        }else{
+          wx.setStorageSync('isIphoneX', false);
+        }
+      }    
+    })
     // 获取用户信息
     wx.getSetting({
       success: res => {
