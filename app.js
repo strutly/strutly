@@ -5,15 +5,27 @@ const api = require('./config/api')
 require('./common')
 App({
   globalData:{
-    num:0
+    num:0,
+    indexRefresh:true,
+    url:'/pages/index/index'
   },
   onLaunch: function () {
     var that = this;
-
+    let menuButtonObject = wx.getMenuButtonBoundingClientRect();
+    console.log(menuButtonObject)
     //获取设备信息
     wx.getSystemInfo({ 
       success: function (res) {
         console.log(res);
+
+        let statusBarHeight = res.statusBarHeight,
+          navTop = menuButtonObject.top,//胶囊按钮与顶部的距离
+          navHeight = statusBarHeight + menuButtonObject.height + (menuButtonObject.top - statusBarHeight)*2;//导航高度
+        that.globalData.navHeight = navHeight;
+        that.globalData.navTop = navTop;
+        that.globalData.windowHeight = res.windowHeight;
+
+
         let modelmes = res.model;
         if (modelmes.search('iPhone X') != -1) {
           wx.setStorageSync('isIphoneX', true);
@@ -27,17 +39,7 @@ App({
       success: res => {
         console.log(res);
         if (res.authSetting['scope.userInfo']) {
-          util.login().then(function(result){            
-            console.log(result);
-            console.log(222);
-            if(result.code===0){
-              wx.setStorageSync('token', result.data.token);
-              wx.setStorageSync('uid', result.data.id);
-              wx.setStorageSync('ifAuth', true);
-              
-            }else{
-              wx.setStorageSync('ifAuth', false);
-            }
+          util.login().then(function(result){           
             // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
             wx.getUserInfo({
               success: res => {
@@ -51,9 +53,7 @@ App({
                 }
               }
             })
-          }).catch(function(res){
-            console.log(res)
-            console.log(32)
+          }).catch(function(res){            
             wx.setStorageSync('ifAuth', false);
           })          
         }else{
@@ -61,6 +61,7 @@ App({
         }
       }
     })
+    
   },
   
     

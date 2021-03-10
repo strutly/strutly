@@ -11,8 +11,11 @@ Page({
     confirm:false,
     confirmMsg:"确认删除这条评论吗?"
   },
-  onLoad(){
+  onLoad(options){
     that = this;
+    that.setData({
+      options:options
+    })
     that.pageComment(0);
   },
   pageComment(pageNo){

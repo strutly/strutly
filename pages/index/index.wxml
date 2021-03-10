@@ -6,7 +6,7 @@
 <view class="cards">
   <block wx:for="{{datas}}" wx:for-item="item">
     <view class="card  {{isIphoneX ?'cards-iphonex':''}}">
-      <view class="card-head" data-uid="{{item.miniUser.id}}" bindtap="home">
+      <view class="card-head" data-uid="{{item.miniUser.id}}" bindtap="home" wx:if="{{!tools.indexOf(black,item.miniUser.id)}}">
         <image class="head-image" src="{{item.miniUser.avatarUrl}}" data-uid="{{item.miniUser.id}}" bindlongpress="{{uid==item.miniUser.id?'':'confirm'}}"></image>
         <view class="card-des">
           <view class="card-nickname">{{item.miniUser.nickName}}</view>
@@ -42,5 +42,7 @@
     <text class="line"></text>
   </view>  
 </view>
-<include src="/pages/template/tab.wxml"></include>
+<!-- <include src="/pages/template/tab.wxml"></include> -->
+
+
 

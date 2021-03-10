@@ -15,22 +15,37 @@ Page({
   },  
   onLoad: function (options) {
     that = this;
-    that.setData({    
+    let uid = options.id || wx.getStorageSync('uid');   
+    that.setData({
+      uid:uid,
       options:options||{}
     })
-   let uid = options.id||wx.getStorageSync('uid');
-   console.log(uid);
-   util.request(api.MyInfo + "/" + uid,{},"GET").then(res=>{
-    that.setData({
-      userInfo:res.data
+    console.log(uid);
+    util.request(api.MyInfo + "/" + uid,{},"GET").then(res=>{
+      that.setData({
+        userInfo:res.data
+      })
+      that.recordList(0);
+     }).catch(err=>{
+      that.setData({
+        prompt:true,
+        promptMsg:err.msg
+      })
+    });
+  },
+  onShow(){
+    if (typeof that.getTabBar === 'function' && that.getTabBar()) {
+      that.getTabBar().setData({
+        selected: 2
+      })
+    }
+    util.request(api.Notice,{},"GET").then(res=>{
+      console.log("notice");
+      console.log(res);
+      that.setData({
+        num:res.data.length||0
+      })
     })
-    that.recordList(0);
-   }).catch(err=>{
-    that.setData({
-      prompt:true,
-      promptMsg:err.msg
-    })
-  })  
   },
   recordList(pageNo){
     let datas = that.data.datas||[];
@@ -148,6 +163,16 @@ Page({
       let pageNo = that.data.pageNo + 1;
       that.recordList(pageNo);
     }    
+  },
+  notice(){
+    wx.navigateTo({
+      url: '/pages/index/notice',
+      success(){        
+        that.getTabBar().setData({
+          num: 0
+        })
+      }
+    })    
   }
 });
 

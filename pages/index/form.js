@@ -4,17 +4,27 @@ const app = getApp();
 var that;
 Page({
   data:{
-    
+    navHeight:app.globalData.navHeight,
+    navTop:app.globalData.navTop,
     delete:false,
+    pageName:'发表日志',
     isIphoneX:wx.getStorageSync('isIphoneX')
   },
-  onLoad(){
+  onLoad(options){
     that = this;
     let formData = wx.getStorageSync('formData')||{open:1,imgs:[]};
     console.log(formData)
     that.setData({
-      formData:formData
+      formData:formData,
+      options:options
     })
+  },
+  onShow: function () {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 1,
+      })
+    }
   },
   open(){
     let open = that.data.formData.open;
@@ -112,4 +122,11 @@ Page({
       auth:false
     })
   },
+  handlerGohomeClick(){
+    let url = app.globalData.url
+    console.log(url)
+    wx.switchTab({
+      url
+    })
+  }
 });

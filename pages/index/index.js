@@ -15,26 +15,33 @@ Page({
   },  
   onLoad: function (options) {
     that = this;
-    console.log(wx.getStorage({
-      key: 'isIphoneX',
-    }))
     that.setData({
-      options:options
+      options:options,
+      datas:[],
+      endline:false
     })
-    util.request(api.Black,{},"get").then(res=>{
-      console.log(res);
-      if(res.code==0){
+    that.listRecord(0);
+  },
+  onShow: function () {
+    console.log("onshow")
+    if(app.globalData.indexRefresh){ 
+      app.globalData.indexRefresh = false;
+      util.request(api.Black,{},"get").then(res=>{
+        console.log(res);
         that.setData({
           black:res.data
         })
-      }
-      that.listRecord(0);
-    }).catch(err=>{
-      console.log(err);
-      that.listRecord(0);
-    })
-    
+      }).catch(err=>{
+        console.log(err);
+      })
+    }
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      that.getTabBar().setData({
+        selected: 0
+      })
+    }
   },
+
   onReady(){
     let syncTime = wx.getStorageSync('syncTime')||new Date().getTime();
     let time = new Date().getTime();
@@ -56,13 +63,15 @@ Page({
     if(ifAuth){
       let uid = e.currentTarget.dataset.uid;
       let id = wx.getStorageSync('uid');
-      let toUrl = "/pages/index/my";
       if(uid != id){
-        toUrl = "/pages/index/you?uid="+uid;
-      }
-      wx.navigateTo({
-        url: toUrl,
-      })
+        wx.navigateTo({
+          url: "/pages/index/you?uid="+uid,
+        })
+      }else{
+        wx.switchTab({
+          url: '/pages/index/my',
+        })
+      }      
     }else{
       that.setData({
         auth:true,
@@ -137,28 +146,31 @@ Page({
       }
       return false;
     };
-    util.getCode().then(function(res){
-      wx.hideLoading();
-      util.request(api.Auth,JSON.stringify({
-        code: res,
-        encryptedData: e.detail.encryptedData,
-        iv: e.detail.iv,
-        signature: e.detail.signature,
-        rawData: e.detail.rawData
-      }),"post").then(function(result){
-        wx.setStorageSync('ifAuth', true);
-        that.setData({
-          auth:false
-        })
-        that.data.callBack(); 
-      });
-    })       
+    util.auth().then(res=>{
+      that.setData({
+        auth:false
+      })
+      that.data.callBack(); 
+    }).catch(err=>{
+      util.warn(that,err.msg);
+    })      
   },  
   refresh(){
     that.setData({
       prompt:false
     });
     that.onLoad(that.data.options)
+  },
+  onPullDownRefresh:function(){
+    wx.showNavigationBarLoading() //在标题栏中显示加载
+    //模拟加载
+
+    setTimeout(function(){
+      // complete
+      wx.hideNavigationBarLoading() //完成停止加载
+      wx.stopPullDownRefresh() //停止下拉刷新
+      that.reLoad();
+    },1500);
   },
   onReachBottom(){
     let endline = that.data.endline;
@@ -185,6 +197,8 @@ Page({
             black:black
           })
           that.black(that.data.datas);
+        }).catch(err=>{
+          console.log("添加黑名单失败")
         })      
       }
       that.no =()=>{
@@ -199,6 +213,18 @@ Page({
           that.confirm(e)
         }
       })
+    }
+  },
+  onShareAppMessage: function (res) {
+    return {
+      title: 'Baby-Record',
+      path: '/pages/index/index'
+    }
+  },
+  onShareTimeline:function(res){
+    return {
+      title: 'Baby-Record',
+      path: '/pages/index/index'
     }
   }
 })

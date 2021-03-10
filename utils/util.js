@@ -1,6 +1,5 @@
 const api = require('../config/api.js');
 const log = require('../utils/log.js')
-var wxcode = "";
 const formatTime = date => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -26,8 +25,9 @@ function dateFormat(date, format) {
       if (mts && mts.length >= 3) {
           date = parseInt(mts[2]);
       }
+      date = new Date(date.replace(/-/g, "/"));
   }
-  date = new Date(date.replace(/-/g, "/"));
+  
   if (!date || date.toUTCString() == "Invalid Date") {
       return "";
   }
@@ -66,7 +66,11 @@ function dateFormat(date, format) {
 function login() {
   return new Promise(function (resolve, reject) {
     return getCode().then(function(res){  
-      return request(api.Login,{code:res},"GET").then(res=>{
+      return request(api.Login,{code:res},"GET").then(res=>{        
+        console.log(res)
+        wx.setStorageSync('token', res.data.token);
+        wx.setStorageSync('uid', res.data.id);
+        wx.setStorageSync('ifAuth', true);        
         resolve(res);
       }).catch(err=>{
         reject(err);
@@ -86,16 +90,14 @@ function getCode() {
   return new Promise(function (resolve, reject) {    
     wx.login({
       success: function (res) {
-        console.log("come getCode")
         if (res.code) {
-          wxcode = res.code;
           resolve(res.code);
         } else {
-          reject(res);
+          reject({code:-1,msg:"您的网络好像不好,刷新试试?"});
         }
       },
       fail: function (err) {
-        reject(err);
+        reject({code:-1,msg:"您的网络好像不好,刷新试试?"});
       }
     });      
   });
@@ -116,16 +118,16 @@ function getUserInfo() {
                 wx.setStorageSync('userInfo', res.userInfo);
                 resolve(res);
               } else {
-                reject(res)
+                reject({code:-1,msg:"获取用户信息失败,请稍后再试"});
               }
             },
             fail: function (err) {
               console.log(err);
-              reject(err);
+              reject({code:-1,msg:"获取用户信息失败,请稍后再试"});
             }
           })
         }else{
-          reject({errcode:-1,errMsg:"用户未进行授权,无法获取权限"});
+          reject({code:-1,msg:"用户未进行授权,无法获取权限"});
         }
       }
     })    
@@ -145,7 +147,11 @@ function auth(){
           signature: userInfo.signature,
           rawData: userInfo.rawData
         }),"POST").then(res=>{
-          resolve(res);
+          console.log(res)
+          wx.setStorageSync('token', res.data.token);
+          wx.setStorageSync('uid', res.data.id);
+          wx.setStorageSync('ifAuth', true);
+          resolve(res);        
         }).catch((err) => {
           reject(err);
         })
@@ -179,52 +185,45 @@ function request(url, data = {}, method = "GET") {
       success: function (res) {
         log.info(res);
         console.log(res);
-        
-        if (res.statusCode == 200) {
-          /**/
-          console.log()
-          if (res.data.code == 401) {
-            console.log("重新获取token 然后在进行")
-            //需要登录后才可以操作
-
-            retry++
-            if(retry<3){
-              return auth().then((result) => {
-                console.log("获取用户信息")
-                console.log(result)
-                wx.setStorageSync('token', result.data.token);
-                wx.setStorageSync('uid', result.data.id);
-                wx.setStorageSync('ifAuth', true);
-                request(url,data,method).then(function(res){
-                  wx.hideLoading();
-                  resolve(res);
-                }).catch(err=>{
-                  wx.hideLoading();
-                  console.log(5);
-                  reject(err);
-                });             
-              }).catch(function(err){
-                wx.hideLoading();
-                console.log(4);
-                reject(err);
-              });
-            }else{
-              wx.hideLoading();
-              reject(res);
-            }
-          } else {
-            wx.hideLoading();
-            resolve(res.data);
+        //服务器返回的数据
+        let returndata = res.data;          
+        if (returndata.code == 401) {
+          console.log("重新获取token 然后在进行")
+          //需要登录后才可以操作
+          retry++
+          if(retry<3){
+            console.log("come retry")
+            return auth().then((result) => {               
+              return request(url,data,method).then(function(res){
+                console.log(res);
+                resolve(res);
+              }).catch(err=>{
+                console.log(5);
+                console.log(err);      
+                reject(err);                            
+              });             
+            }).catch(function(err){
+              console.log(4);
+              reject({code:-1,msg:'授权失败,请重新授权'});
+            });
+          }else{              
+            reject({code:-2,msg:"糟糕!好像出现问题了!刷新一下试试?"});
           }
         } else {
-          wx.hideLoading();
-          reject(res);
+          console.log("come success")
+          if(returndata.code==0){
+            resolve(returndata);
+          }else{
+            reject(returndata);
+          }            
         }
       },
-      fail: function (err) {
-        wx.hideLoading();        
+      fail: function (err) {               
         console.log(err)
-        reject({msg:"糟糕!好像出现问题了!刷新一下试试?"})
+        reject({code:-2,msg:"糟糕!好像出现问题了!刷新一下试试?"})
+      },
+      complete(){
+        wx.hideLoading(); 
       }
     })
   });

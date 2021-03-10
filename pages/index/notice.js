@@ -11,8 +11,11 @@ Page({
     confirm:false,
     confirmMsg:"确认删除这条评论吗?"
   },
-  onLoad(){
+  onLoad: function (options) {
     that = this;
+    that.setData({
+      options:options
+    })
     that.pageComment(0);
   },
   pageComment(pageNo){
@@ -48,7 +51,7 @@ Page({
   },
   onUnload(){
     util.request(api.Notice,{},"DELETE").then(res=>{
-      app.globalData.num = 0;
+
     })
   }
 })

@@ -8,8 +8,11 @@ Page({
     noDataTo:'/pages/index/index',
     noDataBtn:'去主页看看'
   },
-  onLoad(){
+  onLoad(options){
     that = this;
+    that.setData({
+      options:options
+    })
     util.request(api.Fans+"/me",{},"GET").then(res=>{
       if(res.data.fans.length>0){
         that.setData({

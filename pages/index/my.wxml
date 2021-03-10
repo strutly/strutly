@@ -20,7 +20,7 @@
     </view>    
   </view>  
 </view>
-<view class="notice" bindtap="toUrl" data-url="/pages/index/notice" wx:if="{{num>0}}">
+<view url="/pages/index/notice" class="notice" bindtap="notice" wx:if="{{num>0}}">
     <image class="notice-image" src="/images/notice.png"></image>您有{{num}}条未读信息    
 </view>
 <view class="content">
@@ -54,4 +54,4 @@
   <include src="/pages/template/endline.wxml"></include>
 </view>
 
-<include src="/pages/template/tab.wxml"></include>
+<!-- <include src="/pages/template/tab.wxml"></include> -->
