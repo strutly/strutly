@@ -54,7 +54,7 @@ Page({
     var current = e.currentTarget.dataset.src;
     wx.previewImage({
       current: current, // 当前显示图片的http链接  
-      urls: that.data.formData.imgs // 需要预览的图片http链接列表  
+      urls: [current] // 需要预览的图片http链接列表  
     })
   },
   addImg(){
@@ -68,26 +68,77 @@ Page({
       success: function (res) {
         var tempFilePaths = res.tempFilePaths;
         console.log(tempFilePaths);
+        console.log(res);
         for (var i = 0; i < res.tempFilePaths.length; i++) {
-          wx.getFileSystemManager().readFile({
-            filePath: tempFilePaths[i], //选择图片返回的相对路径
-            encoding: "base64",//这个是很重要的
-            success: res => { //成功的回调
-              util.request(api.QiniuBase64,res.data,"post").then(result=>{
-                console.log(result);
-                if(result.code==-1){
-                  util.warn(that,result.msg);
-                }else{
-                  imgs.push(result.data.src);
-                  that.setData({
-                    ['formData.imgs']:imgs
-                  })
-                  wx.setStorageSync('formData', that.data.formData);  
-                }
-              })              
-            }
-          })
+          that.upload(tempFilePaths[i],0,tempFilePaths[i]);          
         }              
+      }
+    })
+  },
+  addVideo(){
+    wx.chooseMedia({
+      mediaType:['video'],
+      sourceType: ['album', 'camera'], // album 从相册选视频，camera 使用相机拍摄
+      maxDuration: 60, // 拍摄视频最长拍摄时间，单位秒。最长支持60秒
+      camera: 'back',//默认拉起的是前置或者后置摄像头，默认back
+      compressed: true,//是否压缩所选择的视频文件
+      success: function(res){
+        console.log(res)
+        let tempFile = res.tempFiles[0];//选择定视频的临时文件路径（本地路径）
+        let duration = tempFile.duration //选定视频的时间长度
+        let size = parseFloat(tempFile.size/1024/1024).toFixed(1) //选定视频的数据量大小
+        that.data.duration = duration
+        if(parseFloat(size) > 100){
+          that.setData({
+            clickFlag: true,
+            duration: ''
+          })
+          let beyondSize = parseFloat(size) - 100
+          wx.showToast({
+            title: '上传的视频大小超限，超出'+beyondSize+'MB,请重新上传',
+            //image: '',//自定义图标的本地路径，image的优先级高于icon
+            icon:'none'
+          })
+        }else{
+          console.log(tempFile)
+          //2.本地视频资源上传到服务器
+          that.upload(tempFile.tempFilePath,1,tempFile.thumbTempFilePath);
+        }
+      },
+      fail: function() {
+        // fail
+      },
+      complete: function() {
+        // complete
+      }
+    })
+  },
+  onReady() {
+    this.videoContext = wx.createVideoContext('myVideo')
+  },
+  videoErrorCallback(e) {
+    console.log('视频错误信息:')
+    console.log(e.detail.errMsg)
+  },
+  upload(tempFilePath,type,cover){
+    console.log(tempFilePath)
+    let imgs = that.data.formData.imgs;  
+    wx.uploadFile({
+      url: api.QiniuFile, 
+      filePath: tempFilePath,
+      name: 'file',
+      success (res){
+        console.log(res)
+        let data = JSON.parse(res.data);
+        let item = {type:type,url:data.data.src,cover:data.data.src};
+        if(type=2){
+          item.cover = cover;  
+        }
+        imgs.push(item);
+        that.setData({
+          ['formData.imgs']:imgs
+        })
+        wx.setStorageSync('formData', that.data.formData);        
       }
     })
   },

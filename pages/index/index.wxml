@@ -17,7 +17,7 @@
         <view class="card-content">{{item.msg}}</view>
         <view class="card-images">
           <view class="image-item {{item.imgs.length==1?'image-one':''}} {{item.imgs.length==2?'image-two':''}}" wx:for="{{item.imgs}}" wx:for-item="src" wx:if="{{index<3}}">
-            <image class="card-image {{item.imgs.length==1?'image-one':''}} {{item.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src}}"></image>
+            <image class="card-image {{item.imgs.length==1?'image-one':''}} {{item.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src.cover}}"></image>
             <view class="image-delete-box" wx:if="{{item.imgs.length>3 && index==2}}">
               <image src="/images/more.png" class="image-delete"></image>
               <text class="image-more">{{item.imgs.length-3}}</text>

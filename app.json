@@ -1,21 +1,21 @@
 {
-  "pages":[
-    
+  "pages": [
     "pages/index/index",
     "pages/index/my",
     "pages/index/fans",
     "pages/index/follow",
     "pages/index/detail",
-    "pages/index/form",    
+    "pages/index/form",
     "pages/index/you",
-    "pages/index/comment"
+    "pages/index/comment",
+    "pages/index/play"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FFB13B",
     "navigationBarTitleText": "Weixin",
-    "navigationBarTextStyle":"white",
-    "onReachBottomDistance":50
+    "navigationBarTextStyle": "white",
+    "onReachBottomDistance": 50
   },
   "tabBar": {
     "custom": true,
@@ -35,7 +35,7 @@
         "text": "发布",
         "iconPath": "/images/publish.png",
         "selectedIconPath": "/images/publish.png"
-      },      
+      },
       {
         "pagePath": "pages/index/my",
         "text": "我的",
