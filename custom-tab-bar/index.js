@@ -1,6 +1,5 @@
 const app = getApp();
 const api = require("../config/api");
-const util = require("../utils/util");
 Component({
   data: {
     num:0,
@@ -29,12 +28,9 @@ Component({
       }
     ]
   },
-  attached() {
-  },
-  created: function() {
-    console.log("created")
+  ready() {
     this.getNum();
-  },
+  },  
   methods: {
     switchTab(e) {
       const data = e.currentTarget.dataset
@@ -44,15 +40,14 @@ Component({
       }
       wx.switchTab({url}) 
     },
-    getNum(){
+    async getNum(){
       var that = this;
       let ifAuth = wx.getStorageSync('ifAuth')||false;
       if(ifAuth){
-        util.request(api.Notice,{},"GET").then(res=>{
-          that.setData({
-            num:res.data.length||0
-          })
-        })
+        let res = await api.notice({});
+        that.setData({
+          num:res.data.length||0
+        });        
       }
     }
   }

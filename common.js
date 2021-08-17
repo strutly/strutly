@@ -15,6 +15,12 @@ const pageExtend = Page => {
         })
       }
     },
+
+    object.home=()=>{    
+      wx.switchTab({
+        url: '/pages/index/index',
+      })
+    },
     object.toUrl=(e)=>{
       let url = e.currentTarget.dataset.url;
       if(url){

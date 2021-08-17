@@ -1,14 +1,15 @@
 {
   "pages": [
-    "pages/index/index",
+    
+    "pages/index/index","pages/index/play",
     "pages/index/my",
     "pages/index/fans",
     "pages/index/follow",
     "pages/index/detail",
     "pages/index/form",
     "pages/index/you",
-    "pages/index/comment",
-    "pages/index/play"
+    "pages/index/comment"
+    
   ],
   "window": {
     "backgroundTextStyle": "light",

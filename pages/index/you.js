@@ -8,65 +8,52 @@ var that;
 Page({
   data: {
     index:1,
-    follow:1,
-    isIphoneX:wx.getStorageSync('isIphoneX')
+    follow:1
   },  
-  onLoad: function (options) {
+  async onLoad(options) {
     console.log(options)
     that = this;
     that.setData({
       options:options||{}
     })
 
-   let uid = options.uid;
-   console.log(uid);
-   util.request(api.MyInfo + "/" + uid,{},"GET").then(res=>{
+    let uid = options.uid;
+    console.log(uid);
+    let res = await api.userInfo({id:uid});
     that.setData({
       userInfo:res.data,
       options:options
     })
-    that.recordList(0)
-   })   
+    that.recordList(1);      
   },
-  recordList(pageNo){
+  async recordList(pageNo){
     let datas = that.data.datas||[];
     let id = that.data.options.uid;
-    util.request(api.Record+"/my",{pageNo:pageNo,uid:id},"GET").then((res) => {
-      if((pageNo==0)&&(res.data==null || res.data.length==0)){
-        that.setData({
-          noData:true,
-        })
-      }else if((pageNo!=0)&&(res.data==null || res.data.length==0)){
-          that.setData({
-            endline:true
-          })
-      }else{      
-        that.setData({
-          pageNo:pageNo,
-          datas:datas.concat(res.data)
-        })
-      }
-    }).catch(err=>{
-      that.setData({
-        prompt:true,
-        promptMsg:err.msg
-      })
+    let res = await api.recordByUid({pageNo:pageNo,uid:id});
+    datas = datas.concat(res.data.content);
+    let arr = util.groupBy(datas,(data)=>{
+      return util.dateFormat(data.createTime,'yyyy年MM月')
+    })
+    that.setData({
+      pageNo:pageNo,
+      endline: res.data.last,
+      datas:datas,
+      myRecords:arr
     })
   },  
-  follow(){
-    util.request(api.Fans,{oid:that.data.options.uid},"POST").then(res=>{
-      if(res.code==0){
-        let follow = 'userInfo.follow';
-        let status = that.data.userInfo.follow;
-        that.setData({
-          [follow]:!status
-        })
-      }
-      console.log(res)
-    })
+  async follow(){
+    let res = await api.addFans({oid:that.data.options.uid})
+    
+    if(res.code==0){
+      let follow = 'userInfo.follow';
+      let status = that.data.userInfo.follow;
+      that.setData({
+        [follow]:!status
+      })
+    }
+      
   },
-  switchTabbar: app.switchTabbar,
-  toUrl:app.toUrl,
+
   onReachBottom(){
     let endline = that.data.endline;
     if(!endline){

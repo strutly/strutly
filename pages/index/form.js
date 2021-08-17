@@ -7,8 +7,8 @@ Page({
     navHeight:app.globalData.navHeight,
     navTop:app.globalData.navTop,
     delete:false,
-    pageName:'发表日志',
-    isIphoneX:wx.getStorageSync('isIphoneX')
+    pageName:'发表日志'
+    
   },
   onLoad(options){
     that = this;
@@ -120,29 +120,23 @@ Page({
     console.log('视频错误信息:')
     console.log(e.detail.errMsg)
   },
-  upload(tempFilePath,type,cover){
+  async upload(tempFilePath,type,cover){
     console.log(tempFilePath)
-    let imgs = that.data.formData.imgs;  
-    wx.uploadFile({
-      url: api.QiniuFile, 
-      filePath: tempFilePath,
-      name: 'file',
-      success (res){
-        console.log(res)
-        let data = JSON.parse(res.data);
-        let item = {type:type,url:data.data.src,cover:data.data.src};
-        if(type=2){
-          item.cover = cover;  
-        }
-        imgs.push(item);
-        that.setData({
-          ['formData.imgs']:imgs
-        })
-        wx.setStorageSync('formData', that.data.formData);        
-      }
+    let imgs = that.data.formData.imgs;
+    let res = await api.uploadFile(tempFilePath);
+    console.log(res);
+    let data = JSON.parse(res.data);
+    let item = {type:type,url:data.data.src,cover:data.data.src};
+    if(type=2){
+      item.cover = cover;  
+    }
+    imgs.push(item);
+    that.setData({
+      ['formData.imgs']:imgs
     })
+    wx.setStorageSync('formData', that.data.formData)
   },
-  form(){
+  async form(){
     let formData = that.data.formData
     if(formData.msg==""){
       return util.warn(that,"请输入内容后再提交");
@@ -150,16 +144,15 @@ Page({
     if(formData.imgs.length<1){
       return util.warn(that,"请至少添加一张图片");
     }
-    util.request(api.Record,JSON.stringify(formData),"POST").then(function(res){
-      if(res.code==0){
-        wx.removeStorageSync('formData');
-        wx.reLaunch({
-          url: '/pages/index/index',
-        })
-      }else{
-        util.warn(that,res.errMsg);
-      }
-    })
+    let res = await api.addRecord(JSON.stringify(formData));
+    if(res.code==0){
+      wx.removeStorageSync('formData');
+      wx.reLaunch({
+        url: '/pages/index/index',
+      })
+    }else{
+      util.warn(that,res.errMsg);
+    }
   },
   bindTextAreaBlur(e){
     console.log(e);

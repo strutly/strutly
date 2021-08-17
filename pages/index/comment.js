@@ -1,5 +1,4 @@
 var that;
-const app = getApp();
 const api = require("../../config/api");
 const util = require("../../utils/util");
 Page({
@@ -18,29 +17,23 @@ Page({
     })
     that.pageComment(0);
   },
-  pageComment(pageNo){
+  async pageComment(pageNo){
     let lists = that.data.lists;
-    util.request(api.Comment,{pageNo:pageNo},"GET").then((res) => {
-      if((pageNo==0)&&(res.data==null || res.data.length==0)){
-        that.setData({
-          noData:true,
-        })
-      }else if((pageNo!=0)&&(res.data==null || res.data.length==0)){
-          that.setData({
-            endline:true
-          })
-      }else{      
-        that.setData({
-          pageNo:pageNo,
-          lists:lists.concat(res.data)
-        })
-      }
-    }).catch(err=>{
+    let res = await api.comment({pageNo:pageNo});
+    if((pageNo==0)&&(res.data==null || res.data.length==0)){
       that.setData({
-        prompt:true,
-        promptMsg:err.msg
+        noData:true,
       })
-    })
+    }else if((pageNo!=0)&&(res.data==null || res.data.length==0)){
+        that.setData({
+          endline:true
+        })
+    }else{      
+      that.setData({
+        pageNo:pageNo,
+        lists:lists.concat(res.data)
+      })
+    }
   },
   onReachBottom(){
     let endline = that.data.endline;
@@ -56,17 +49,16 @@ Page({
     that.setData({
       confirm:true
     })
-    that.yes =()=>{
-      util.request(api.Comment+"/"+comments[index].id,{},"DELETE").then(res=>{
-        if(res.code==0){
-          comments.splice(index,1)
-        }
-        that.setData({
-          confirm:false,
-          lists:comments
-        })
-        util.warn(that,res.msg)
-      })      
+    that.yes =async ()=>{
+      let res = await api.deleteComment({id:comments[index].id})
+      if(res.code==0){
+        comments.splice(index,1)
+      }
+      that.setData({
+        confirm:false,
+        lists:comments
+      })
+      util.warn(that,res.msg);    
     }
     that.no =()=>{
       that.setData({

@@ -10,55 +10,29 @@ Page({
     num:app.globalData.num,
     black:[],
     uid:wx.getStorageSync('uid'),
-    confirmMsg:"确认将Ta关进小黑屋7天吗?",
-    isIphoneX:wx.getStorageSync('isIphoneX')
+    confirmMsg:"确认将Ta关进小黑屋7天吗?"
   },  
-  onLoad: function (options) {
+  async onLoad(options) {
     that = this;
     that.setData({
       options:options,
       datas:[],
       endline:false
     })
-    that.listRecord(0);
+    await api.login();
+
+    console.log("login end");
+    that.listRecord(1);
   },
   onShow: function () {
     console.log("onshow")
-    if(app.globalData.indexRefresh){ 
-      app.globalData.indexRefresh = false;
-      util.request(api.Black,{},"get").then(res=>{
-        console.log(res);
-        that.setData({
-          black:res.data
-        })
-      }).catch(err=>{
-        console.log(err);
-      })
-    }
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       that.getTabBar().setData({
         selected: 0
       })
     }
   },
-
-  onReady(){
-    let syncTime = wx.getStorageSync('syncTime')||new Date().getTime();
-    let time = new Date().getTime();
-    let ifAuth = wx.getStorageSync('ifAuth')||false;
-    /**小小的同步一下用户数据吧!*/
-    if(ifAuth && syncTime <= time){
-      util.getUserInfo().then(user=>{
-        console.log(user)
-        util.request(api.MyInfo,user.userInfo,"POST").then(res=>{
-          if(res.code==0){
-            wx.setStorageSync('syncTime', time + 7*24*60*60);
-          }
-        })
-      })
-    }    
-  },
-  home(e){
+  userHome(e){
     let ifAuth = wx.getStorageSync('ifAuth')||false;
     if(ifAuth){
       let uid = e.currentTarget.dataset.uid;
@@ -83,34 +57,20 @@ Page({
   },
   black(datas){
     let black = that.data.black;
+    
     datas = datas.filter(item => black.indexOf(item.miniUser.id)<0)
     that.setData({
       datas:datas
     })
   },
-  listRecord(pageNo){
-    let datas = that.data.datas;    
-    util.request(api.Record,{pageNo:pageNo},"GET").then((res) => {
-      if((pageNo==0)&&(res.data==null || res.data.length==0)){
-        that.setData({
-          noData:true,
-        })
-      }else if((pageNo!=0)&&(res.data==null || res.data.length==0)){
-          that.setData({
-            endline:true
-          })
-      }else{        
-        that.setData({
-          pageNo:pageNo          
-        })
-        that.black(datas.concat(res.data))
-      }
-    }).catch(err=>{
-      that.setData({
-        prompt:true,
-        promptMsg:err.msg
-      })
-    })
+  async listRecord(pageNo){
+    let datas = that.data.datas;
+    let res = await api.record({pageNo:pageNo});
+    that.setData({
+      pageNo:pageNo,
+      endline: res.data.last,
+      datas:datas.concat(res.data.content)
+    });
   },
   push(){
     let ifAuth = wx.getStorageSync('ifAuth')||false;
@@ -132,28 +92,41 @@ Page({
       auth:false
     })
   },
-  auth(e){
-    console.log(3);
-    wx.showLoading({
-      mask:true,
-      title: '授权中~~',
-    })
-    if (e.detail.errMsg !== 'getUserInfo:ok') {
-      wx.hideLoading();
-      if (e.detail.errMsg === 'getUserInfo:fail auth deny') {
-        util.warn(that,"授权失败");
-        return false;
-      }
-      return false;
-    };
-    util.auth().then(res=>{
-      that.setData({
-        auth:false
+  async auth(e){
+    let res = {};
+    try {
+      res = await wx.getUserProfile({
+        desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       })
-      that.data.callBack(); 
-    }).catch(err=>{
-      util.warn(that,err.msg);
-    })      
+    } catch (error) {
+      return util.prompt(that,"授权失败,请重试~");
+    }
+    let code = await api.getCode();
+    console.log(res)
+    if(res.errMsg=="getUserProfile:ok"){
+      let userInfo = res.userInfo
+      wx.setStorageSync('userInfo', userInfo);      
+      let authRes = await api.authorize({
+        code:code,
+        encryptedData:res.encryptedData,
+        iv:res.iv,
+        signature:res.signature,
+        rawData:res.rawData
+      });
+      wx.setStorageSync('token', authRes.data);
+      wx.setStorageSync('uid', authRes.data.id);
+      wx.setStorageSync('ifAuth', true);
+      if(authRes.code==0){
+        that.setData({
+          auth:false
+        })
+        that.data.callBack();
+      }else{
+        util.prompt(that,authRes.msg);
+      }
+    }else{
+      util.prompt(that,"授权失败,请重试~");
+    }       
   },  
   refresh(){
     that.setData({
@@ -163,13 +136,15 @@ Page({
   },
   onPullDownRefresh:function(){
     wx.showNavigationBarLoading() //在标题栏中显示加载
-    //模拟加载
-
     setTimeout(function(){
       // complete
       wx.hideNavigationBarLoading() //完成停止加载
       wx.stopPullDownRefresh() //停止下拉刷新
-      that.reLoad();
+      that.setData({
+        datas:[],
+        endline:false
+      });
+      that.listRecord(1);
     },1500);
   },
   onReachBottom(){
@@ -187,19 +162,15 @@ Page({
       that.setData({
         confirm:true
       })
-      that.yes =()=>{
+      that.yes = async ()=>{
         let uid = e.currentTarget.dataset.uid;
-        util.request(api.Black+"/"+uid,{},"POST").then(res=>{
-          console.log(res);
-          black.push(uid);
-          that.setData({
-            confirm:false,
-            black:black
-          })
-          that.black(that.data.datas);
-        }).catch(err=>{
-          console.log("添加黑名单失败")
-        })      
+        let res = await api.black();
+        console.log(res);
+        black.push(uid);
+        that.setData({
+          confirm:false,
+          black:black
+        });            
       }
       that.no =()=>{
         that.setData({

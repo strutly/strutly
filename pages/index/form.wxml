@@ -17,4 +17,4 @@
   <view class="open-switch">是否公开?<view class="switch {{formData.open?'switch-active':''}}" bindtap="open"></view></view>
   
 </view>
-<view class="push  {{isIphoneX ?'tab-iphonex-button':''}}" bindtap="form">点击发布</view>
+<view class="push" bindtap="form">点击发布</view>

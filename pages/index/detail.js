@@ -7,7 +7,10 @@ Page({
     like:0,
     comment:false,
     uid:wx.getStorageSync('uid')||"",
-    confirmMsg:"确认删除这条评论吗?"
+    confirmMsg:"确认删除这条评论吗?",
+    url:'http://pic.strutly.cn/mylove/e649640d-5c37-4a86-9597-a8a0128345ac.mp4',
+    full:false,
+    playVideo:false
   },
   onLoad(options){
     console.log(options)
@@ -18,37 +21,52 @@ Page({
       id:id
     })
   },
-  onShow(){
-    let id = that.data.id;
-    util.request(api.Record+"/"+id,{},"GET").then(res=>{
-      if(res.data!=null){
-        that.setData({
-          detail:res.data,
-          likes:res.data.counts[1]||[],
-          replys:res.data.counts[2]||[],
-          id:id
-        })
-      }else{
-        that.setData({
-          noData:true,
-          noDataTo:"/pages/index/index",
-          noDataMsg:"该内容不存在或已经隐藏,去主页看看吧!",
-          noDataBtn:"主页"
-        })
-      }      
+  screenChange(e){
+    console.log(e);
+    that.setData({
+      full:e.detail.fullScreen
     })
   },
-  onReady(){
+  video(e){
+    that.setData({
+      playVideo:true,
+      url:e.currentTarget.dataset.src
+    })
+  },
+
+  hiddenVideo(){
+    that.setData({
+      playVideo:false
+    })    
+  },
+  async onShow(){
+    let id = that.data.id;
+    let res = await api.recordDetail({id:id});
+    if(res.data!=null){
+      that.setData({
+        detail:res.data,
+        likes:res.data.counts[1]||[],
+        replys:res.data.counts[2]||[],
+        id:id
+      })
+    }else{
+      that.setData({
+        noData:true,
+        noDataTo:"/pages/index/index",
+        noDataMsg:"该内容不存在或已经隐藏,去主页看看吧!",
+        noDataBtn:"主页"
+      })
+    } 
+  },
+  async onReady(){
     let ifAuth = wx.getStorageSync('ifAuth')||false;
     if(ifAuth){
-      util.request(api.Comment+"/"+that.data.id,{},"GET").then(res=>{
-        console.log(res)
-        console.log(res.data)
-        that.setData({
-          like:res.data?1:0
-        })        
+      let res = await api.commentDetail({id:that.data.id});
+      that.setData({
+        like:res.data?1:0
       })
-    }    
+    };
+      
   },
   comment(e){
     let ifAuth = wx.getStorageSync('ifAuth');
@@ -67,37 +85,42 @@ Page({
       })      
     }    
   },
-  auth(e){
-    console.log(3);
-    wx.showLoading({
-      mask:true,
-      title: '授权中~~',
-    })
-    if (e.detail.errMsg !== 'getUserInfo:ok') {
-      wx.hideLoading();
-      if (e.detail.errMsg === 'getUserInfo:fail auth deny') {
-        util.warn(that,"授权失败");
-        return false;
-      }
-      return false;
-    };
-    util.getCode().then(function(res){
-      wx.hideLoading();
-      util.request(api.Auth,JSON.stringify({
-        code: res,
-        encryptedData: e.detail.encryptedData,
-        iv: e.detail.iv,
-        signature: e.detail.signature,
-        rawData: e.detail.rawData
-      }),"post").then(function(result){
-        wx.setStorageSync('ifAuth', true);
+  async auth(e){
+    let res = {};
+    try {
+      res = await wx.getUserProfile({
+        desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+      })
+    } catch (error) {
+      return util.prompt(that,"授权失败,请重试~");
+    }
+    let code = await api.getCode();
+    console.log(res)
+    if(res.errMsg=="getUserProfile:ok"){
+      let userInfo = res.userInfo
+      wx.setStorageSync('userInfo', userInfo);      
+      let authRes = await api.authorize({
+        code:code,
+        encryptedData:res.encryptedData,
+        iv:res.iv,
+        signature:res.signature,
+        rawData:res.rawData
+      });
+      wx.setStorageSync('token', authRes.data);
+      wx.setStorageSync('uid', authRes.data.id);
+      wx.setStorageSync('ifAuth', true);
+      if(authRes.code==0){
         that.setData({
           auth:false
         })
-        that.data.callBack(); 
-      });
-    })       
-  },
+        that.data.callBack();
+      }else{
+        util.prompt(that,authRes.msg);
+      }
+    }else{
+      util.prompt(that,"授权失败,请重试~");
+    }       
+  }, 
   giveup(e){
     that.setData({
       comment:false,
@@ -156,10 +179,10 @@ Page({
     var current = e.target.dataset.src;
     wx.previewImage({
       current: current, // 当前显示图片的http链接  
-      urls: that.data.detail.imgs // 需要预览的图片http链接列表  
+      urls: [current] // 需要预览的图片http链接列表  
     })
   },
-  home(e){
+  userHome(e){
     let ifAuth = wx.getStorageSync('ifAuth')||false;
     if(ifAuth){
       let uid = e.currentTarget.dataset.uid;
@@ -178,12 +201,12 @@ Page({
       that.setData({
         auth:true,
         callBack:function(){
-          that.home(e)
+          that.userHome(e)
         }
       })
     }    
   },
-  handle(type){
+  async handle(type){
     let userInfo = wx.getStorageSync('userInfo');
     let data = {
       rid:that.data.id,
@@ -195,38 +218,37 @@ Page({
       type:type
     };
     console.log(data);
-    util.request(api.Comment,JSON.stringify(data),"POST").then(res=>{
-      console.log(res)
-      if(type==1){
-        let like = that.data.like;
-        like = -1*like + 1;
-        let likes = that.data.likes;
-        if(like==1){
-          likes.push({uid:that.data.uid,nickName:userInfo.nickName})
-        }else{
-          let index =  likes.findIndex(item => item.uid === that.data.uid);
-          console.log(index);
-          likes.splice(index,1);
-          console.log(likes)
-        }
-        that.setData({
-          like:like,
-          likes:likes
-        })
+    let res = await api.addComment(JSON.stringify(data));
+
+    if(type==1){
+      let like = that.data.like;
+      like = -1*like + 1;
+      let likes = that.data.likes;
+      if(like==1){
+        likes.push({uid:that.data.uid,nickName:userInfo.nickName})
       }else{
-        console.log(res)
-        let replys = that.data.replys;
-        data.id = res.data;
-        data.uid = that.data.uid;
-        data.nickName = userInfo.nickName;
-        data.avatarUrl = userInfo.avatarUrl;
-        data.createTime = util.dateFormat(new Date(),'yyyy-MM-dd hh:mm:ss');
-        replys.push(data)
-        that.setData({
-          replys:replys
-        })
+        let index =  likes.findIndex(item => item.uid === that.data.uid);
+        console.log(index);
+        likes.splice(index,1);
+        console.log(likes)
       }
-    });
+      that.setData({
+        like:like,
+        likes:likes
+      })
+    }else{
+      console.log(res)
+      let replys = that.data.replys;
+      data.id = res.data;
+      data.uid = that.data.uid;
+      data.nickName = userInfo.nickName;
+      data.avatarUrl = userInfo.avatarUrl;
+      data.createTime = util.dateFormat(new Date(),'yyyy-MM-dd hh:mm:ss');
+      replys.push(data)
+      that.setData({
+        replys:replys
+      })
+    }    
   },
   confirm(e){
     console.log(e);
@@ -234,15 +256,15 @@ Page({
     that.setData({
       confirm:true
     })
-    that.yes =()=>{
-      util.request(api.Comment+"/"+e.currentTarget.dataset.id,{},"DELETE").then(res=>{
-        let replys = that.data.replys;
-        replys.splice(index,1);
-        that.setData({
-          confirm:false,
-          replys:replys
-        })
-      })      
+    that.yes =async ()=>{
+      let res = await api.deleteComment({id:e.currentTarget.dataset.id});
+      console.log(res);
+      let replys = that.data.replys;
+      replys.splice(index,1);
+      that.setData({
+        confirm:false,
+        replys:replys
+      })    
     }
     that.no =()=>{
       that.setData({

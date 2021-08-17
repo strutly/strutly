@@ -5,8 +5,8 @@
 <!--index.wxml-->
 <view class="cards">
   <block wx:for="{{datas}}" wx:for-item="item">
-    <view class="card  {{isIphoneX ?'cards-iphonex':''}}">
-      <view class="card-head" data-uid="{{item.miniUser.id}}" bindtap="home" wx:if="{{!tools.indexOf(black,item.miniUser.id)}}">
+    <view class="card">
+      <view class="card-head" data-uid="{{item.miniUser.id}}" bindtap="userHome" wx:if="{{!tools.indexOf(black,item.miniUser.id)}}">
         <image class="head-image" src="{{item.miniUser.avatarUrl}}" data-uid="{{item.miniUser.id}}" bindlongpress="{{uid==item.miniUser.id?'':'confirm'}}"></image>
         <view class="card-des">
           <view class="card-nickname">{{item.miniUser.nickName}}</view>

@@ -18,10 +18,11 @@ Page({
     })
     that.pageComment(0);
   },
-  pageComment(pageNo){
+  async pageComment(pageNo){
     let lists = that.data.lists;
-    util.request(api.Notice,{pageNo:pageNo},"GET").then((res) => {
-      if((pageNo==0)&&(res.data==null || res.data.length==0)){
+    let res = await api.notice({pageNo:pageNo});
+
+    if((pageNo==0)&&(res.data==null || res.data.length==0)){
         that.setData({
           noData:true,
         })
@@ -35,12 +36,6 @@ Page({
           lists:lists.concat(res.data)
         })
       }
-    }).catch(err=>{
-      that.setData({
-        prompt:true,
-        promptMsg:err.msg
-      })
-    })
   },
   onReachBottom(){
     let endline = that.data.endline;
@@ -49,9 +44,7 @@ Page({
       that.pageComment(pageNo);
     }    
   },
-  onUnload(){
-    util.request(api.Notice,{},"DELETE").then(res=>{
-
-    })
+  async onUnload(){
+    await api.deleteNotice({});
   }
 })

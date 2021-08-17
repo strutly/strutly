@@ -1,6 +1,7 @@
 <include src="/pages/template/error.wxml"></include>
 <include src="/pages/template/auth.wxml"></include>
 <include src="/pages/template/confirm.wxml"></include>
+<include src="/pages/template/video.wxml"></include>
 <view class="container" wx:if="{{detail}}">  
   <view class="card">
     <view class="card-head">
@@ -13,7 +14,7 @@
     <view class="card-content">{{detail.msg}}</view>
     <view class="card-images">
       <view class="image-item {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}" wx:for="{{detail.imgs}}" wx:for-item="src">
-        <image  bindtap="previewImage" data-src="{{src}}" class="card-image {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src}}?imageMogr2"></image>
+        <image  bindtap="{{src.type?'video':'previewImage'}}" data-src="{{src.url}}" class="card-image {{detail.imgs.length==1?'image-one':''}} {{detail.imgs.length==2?'image-two':''}}"  mode="aspectFill" src="{{src.cover}}?imageMogr2"></image>
       </view>         
     </view>
     <view class="card-handles">
@@ -33,12 +34,12 @@
     </view>
     <view class="card-likes" wx:if="{{likes.length>0}}">
       <image class="like-image" src="/images/like1.png"></image>
-      <view class="like-name" wx:for="{{likes}}" data-uid="{{item.uid}}" bindtap="home">{{item.nickName}}</view>
+      <view class="like-name" wx:for="{{likes}}" data-uid="{{item.uid}}" bindtap="userHome">{{item.nickName}}</view>
     </view>
   </view>
   <view class="card-comments">
     <view class="comment-item" wx:for="{{replys}}">
-      <view class="comment-head" data-uid="{{item.uid}}" bindtap="home">
+      <view class="comment-head" data-uid="{{item.uid}}" bindtap="userHome">
         <image class="comment-image" src="{{item.avatarUrl}}"></image>
         <view class="comment-des">
           <view class="comment-nickname">{{item.nickName}}</view>

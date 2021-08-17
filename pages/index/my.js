@@ -10,10 +10,9 @@ Page({
     index:1,
     user:wx.getStorageSync('userInfo'),
     num:app.globalData.num,
-    myRecords:[],
-    isIphoneX:wx.getStorageSync('isIphoneX')
+    myRecords:[]
   },  
-  onLoad: function (options) {
+  async onLoad(options) {
     that = this;
     let uid = options.id || wx.getStorageSync('uid');   
     that.setData({
@@ -21,62 +20,36 @@ Page({
       options:options||{}
     })
     console.log(uid);
-    util.request(api.MyInfo + "/" + uid,{},"GET").then(res=>{
-      that.setData({
-        userInfo:res.data
-      })
-      that.recordList(0);
-     }).catch(err=>{
-      that.setData({
-        prompt:true,
-        promptMsg:err.msg
-      })
-    });
+    let res = await api.userInfo({id:uid});
+    that.setData({
+      userInfo:res.data
+    })
+    that.recordList(1);
   },
-  onShow(){
+  async onShow(){
     if (typeof that.getTabBar === 'function' && that.getTabBar()) {
       that.getTabBar().setData({
         selected: 2
       })
     }
-    util.request(api.Notice,{},"GET").then(res=>{
-      console.log("notice");
-      console.log(res);
-      that.setData({
-        num:res.data.length||0
-      })
+    let res = await api.notice({});
+    that.setData({
+      num:res.data.length||0
     })
   },
-  recordList(pageNo){
+  async recordList(pageNo){
     let datas = that.data.datas||[];
     let id = wx.getStorageSync('uid');
-    util.request(api.Record+"/my",{pageNo:pageNo,uid:id},"GET").then((res) => {
-      console.log(pageNo);
-      console.log(res)
-      if((pageNo==0)&&(res.data==null || res.data.length==0)){
-        that.setData({
-          noData:true
-        })
-      }else if((pageNo!=0)&&(res.data==null || res.data.length==0)){
-          that.setData({
-            endline:true
-          })
-      }else{
-        datas = datas.concat(res.data);
-        let arr = util.groupBy(datas,(data)=>{
-          return util.dateFormat(data.createTime,'yyyy年MM月')
-        })
-        that.setData({
-          pageNo:pageNo,
-          datas:datas,
-          myRecords:arr
-        })
-      }
-    }).catch(err=>{
-      that.setData({
-        prompt:true,
-        promptMsg:err.msg
-      })
+    let res = await api.recordByUid({pageNo:pageNo,uid:id});
+    datas = datas.concat(res.data.content);
+    let arr = util.groupBy(datas,(data)=>{
+      return util.dateFormat(data.createTime,'yyyy年MM月')
+    })
+    that.setData({
+      pageNo:pageNo,
+      endline: res.data.last,
+      datas:datas,
+      myRecords:arr
     })
   },
   confirm(e){
@@ -85,38 +58,35 @@ Page({
       [type]:true
     })
   },
-  handle(e){
+  async handle(e){
     let type = e.currentTarget.dataset.type;
     let id = e.currentTarget.dataset.id;
     let datas = that.data.datas;
     console.log(datas)
-    let index = datas.findIndex((value, index, arr) => {
+    let index = datas.findIndex((value) => {
       return value.id == id;
     })
     console.log(index)
-    util.request(api.Record+"/"+id,{},type).then(res=>{
-      util.warn(that,"操作成功!");
-      that.setData({
-        move:false
-      })
-      console.log(type=="delete")
-      if(type=="delete"){
-        console.log("delete")
-        datas.splice(index,1);
-        
-      }else{
-        datas[index].open = !datas[index].open;
-      }
-      console.log(datas);
-      let arr = util.groupBy(datas,(data)=>{
-        return util.dateFormat(data.createTime,'yyyy年MM月')
-      })
-      that.setData({
-        myRecords:arr
-      })
-      console.log(res)
-    }).catch(err=>{
-      util.warn(that,"操作失败!请稍后再试!")
+    let res = await api.recordById({id:id,type:type});
+    console.log(res);
+    util.warn(that,"操作成功!");
+    that.setData({
+      move:false
+    })
+    console.log(type=="delete")
+    if(type=="delete"){
+      console.log("delete")
+      datas.splice(index,1);
+      
+    }else{
+      datas[index].open = !datas[index].open;
+    }
+
+    let arr = util.groupBy(datas,(data)=>{
+      return util.dateFormat(data.createTime,'yyyy年MM月')
+    })
+    that.setData({
+      myRecords:arr
     })
   },
   touchstart(e){
@@ -153,7 +123,7 @@ Page({
     return 360 * Math.atan(_Y / _X) / (2 * Math.PI);    
   },
   push(){
-    wx.navigateTo({
+    wx.switchTab({
       url: '/pages/index/form',
     })
   },

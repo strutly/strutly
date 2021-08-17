@@ -1,4 +1,4 @@
-<view class="tab {{isIphoneX ?'tab-iphonex-button':''}}">
+<view class="tab">
   <view class="tab-item" bindtap="switchTabbar" data-index='0' data-stu="{{index}}">
     <image class="tab-image" src="/images/home{{index}}.png"></image>
     <text class="tab-text {{index==0?'tab-active':''}}">首页</text>

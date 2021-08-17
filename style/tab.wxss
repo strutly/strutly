@@ -46,9 +46,6 @@
 .tab-active{
   color:#FFB13B;
 }
-.tab-iphonex-button {
-  bottom:48rpx!important;
-}
 .tab-badge{
   position: absolute;
   top: -12rpx;

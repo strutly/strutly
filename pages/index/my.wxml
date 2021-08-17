@@ -30,7 +30,7 @@
     <view class="media-box {{(move && item.id==moveIndex)?'media-active':''}}" wx:for="{{records}}">
       <view class="media-content" data-index="{{item.id}}" bindtouchstart="touchstart" bindtouchmove="touchmove" data-url="/pages/index/detail?id={{item.id}}" bindtap="toUrl">
         <view class="media-hd">
-          <image mode="aspectFill" src="{{item.imgs[0]}}"></image>
+          <image mode="aspectFill" src="{{item.imgs[0].url}}"></image>
         </view>
         <view class="media-bd">
           <view class="media-title">{{tools.dateFormat(item.createTime,'MM月dd日')}}</view>

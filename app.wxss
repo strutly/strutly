@@ -195,3 +195,18 @@ icon {
   font-size: 30rpx;
   margin: 0 12rpx;
 }
+
+.video-mask{
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index:1000;
+}
+
+video{
+  z-index:1001;
+  width: 100%;  
+}

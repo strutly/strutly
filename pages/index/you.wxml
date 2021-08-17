@@ -13,7 +13,7 @@
   <view class="panel">
     <view class="media-box" wx:for="{{datas}}"  data-url="/pages/index/detail?id={{item.id}}" bindtap="toUrl">
       <view class="media-hd">
-        <image mode="aspectFill" src="{{item.imgs[0]}}"></image>
+        <image mode="aspectFill" src="{{item.imgs[0].url}}"></image>
       </view>
       <view class="media-bd">
         <view class="media-title">{{item.createTime}}</view>

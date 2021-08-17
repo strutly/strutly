@@ -11,7 +11,7 @@
     </view>
     
     <view class='modal-btns'>          
-        <button class='modal-btn' open-type="getUserInfo" bindgetuserinfo="auth">微信授权</button>
+        <button class='modal-btn' bindtap="auth">微信授权</button>
     </view>    
   </view>
 </view>
