@@ -219,36 +219,39 @@ Page({
     };
     console.log(data);
     let res = await api.addComment(JSON.stringify(data));
-
-    if(type==1){
-      let like = that.data.like;
-      like = -1*like + 1;
-      let likes = that.data.likes;
-      if(like==1){
-        likes.push({uid:that.data.uid,nickName:userInfo.nickName})
+    if(res.code==0){
+      if(type==1){
+        let like = that.data.like;
+        like = -1*like + 1;
+        let likes = that.data.likes;
+        if(like==1){
+          likes.push({uid:that.data.uid,nickName:userInfo.nickName})
+        }else{
+          let index =  likes.findIndex(item => item.uid === that.data.uid);
+          console.log(index);
+          likes.splice(index,1);
+          console.log(likes)
+        }
+        that.setData({
+          like:like,
+          likes:likes
+        })
       }else{
-        let index =  likes.findIndex(item => item.uid === that.data.uid);
-        console.log(index);
-        likes.splice(index,1);
-        console.log(likes)
+        console.log(res)
+        let replys = that.data.replys;
+        data.id = res.data;
+        data.uid = that.data.uid;
+        data.nickName = userInfo.nickName;
+        data.avatarUrl = userInfo.avatarUrl;
+        data.createTime = util.dateFormat(new Date(),'yyyy-MM-dd hh:mm:ss');
+        replys.push(data)
+        that.setData({
+          replys:replys
+        })
       }
-      that.setData({
-        like:like,
-        likes:likes
-      })
     }else{
-      console.log(res)
-      let replys = that.data.replys;
-      data.id = res.data;
-      data.uid = that.data.uid;
-      data.nickName = userInfo.nickName;
-      data.avatarUrl = userInfo.avatarUrl;
-      data.createTime = util.dateFormat(new Date(),'yyyy-MM-dd hh:mm:ss');
-      replys.push(data)
-      that.setData({
-        replys:replys
-      })
-    }    
+      util.warn(that,res.msg);
+    };        
   },
   confirm(e){
     console.log(e);
