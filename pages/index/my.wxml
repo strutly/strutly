@@ -2,8 +2,12 @@
 <wxs src="../../utils/Tools.wxs" module="tools"/>
 <view class="head">
   <view class="personal">
-    <image class="headimg" src="{{userInfo.miniUser.avatarUrl||user.avatarUrl}}"></image>
-    <view class="nickname">{{userInfo.miniUser.nickName||user.nickName}}</view>    
+    <view class="headimg" bindtap="auth">
+      <open-data  type='userAvatarUrl'></open-data>
+    </view>    
+    <!-- <image class="headimg" bindtap="auth" src="{{userInfo.miniUser.avatarUrl||user.avatarUrl}}"></image> -->
+    <!-- <view class="nickname" bindtap="auth">{{userInfo.miniUser.nickName||user.nickName}}</view> -->
+    <open-data class="nickname" type="userNickName"></open-data>    
     <view class="my-list">
       <view class="my-item" bindtap="toUrl" data-url="/pages/index/fans">
         <view>我的粉丝</view>

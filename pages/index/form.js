@@ -70,10 +70,25 @@ Page({
         console.log(tempFilePaths);
         console.log(res);
         for (var i = 0; i < res.tempFilePaths.length; i++) {
-          that.upload(tempFilePaths[i],0,tempFilePaths[i]);          
+          that.uploadImg(tempFilePaths[i]);          
         }              
       }
     })
+  },
+  async uploadImg(tempFilePaths){
+    let imgs = that.data.formData.imgs;
+    let res = await api.uploadImg(tempFilePaths);
+    
+    let data = JSON.parse(res.data);
+    if(data.code!=0){
+      return util.warn(that,data.msg);
+    }
+    let item = {type:0,url:data.data.src,cover:data.data.src};
+    imgs.push(item);
+    that.setData({
+      ['formData.imgs']:imgs
+    })
+    wx.setStorageSync('formData', that.data.formData)
   },
   addVideo(){
     wx.chooseMedia({
@@ -102,7 +117,7 @@ Page({
         }else{
           console.log(tempFile)
           //2.本地视频资源上传到服务器
-          that.upload(tempFile.tempFilePath,1,tempFile.thumbTempFilePath);
+          that.upload(tempFile.tempFilePath,tempFile.thumbTempFilePath);
         }
       },
       fail: function() {
@@ -120,16 +135,23 @@ Page({
     console.log('视频错误信息:')
     console.log(e.detail.errMsg)
   },
-  async upload(tempFilePath,type,cover){
+  async upload(tempFilePath,cover){
     console.log(tempFilePath)
     let imgs = that.data.formData.imgs;
     let res = await api.uploadFile(tempFilePath);
+    let res2 = await api.uploadImg(cover);
     console.log(res);
+    console.log(res2);
     let data = JSON.parse(res.data);
-    let item = {type:type,url:data.data.src,cover:data.data.src};
-    if(type=2){
-      item.cover = cover;  
+    let data2 = JSON.parse(res2.data);
+    if(data.code!=0){
+      return util.warn(that,data.msg)
     }
+    if(data2.code!=0){
+      return util.warn(that,"封面"+data2.msg);
+    }    
+    
+    let item = {type:1,url:data.data.src,cover:data2.data.src};
     imgs.push(item);
     that.setData({
       ['formData.imgs']:imgs
@@ -151,7 +173,7 @@ Page({
         url: '/pages/index/index',
       })
     }else{
-      util.warn(that,res.errMsg);
+      util.warn(that,res.msg);
     }
   },
   bindTextAreaBlur(e){

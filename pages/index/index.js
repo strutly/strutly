@@ -99,7 +99,7 @@ Page({
         desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       })
     } catch (error) {
-      return util.prompt(that,"授权失败,请重试~");
+      return util.warn(that,"授权失败,请重试~");
     }
     let code = await api.getCode();
     console.log(res)
@@ -122,10 +122,10 @@ Page({
         })
         that.data.callBack();
       }else{
-        util.prompt(that,authRes.msg);
+        util.warn(that,authRes.msg);
       }
     }else{
-      util.prompt(that,"授权失败,请重试~");
+      util.warn(that,"授权失败,请重试~");
     }       
   },  
   refresh(){

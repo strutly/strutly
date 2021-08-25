@@ -38,7 +38,7 @@
     "minifyWXSS": true
   },
   "compileType": "miniprogram",
-  "libVersion": "2.13.1",
+  "libVersion": "2.19.1",
   "appid": "wx25d447e42eaed489",
   "projectname": "strutly",
   "debugOptions": {

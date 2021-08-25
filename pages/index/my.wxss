@@ -12,12 +12,9 @@ page{
   overflow: hidden; 
 }
 
-.personal{
-  
+.personal{  
   text-align: center;
-  
 }
-
 
 .headimg{
   width:140rpx;
@@ -26,6 +23,7 @@ page{
   border-radius: 50%;  
   margin: 48rpx auto 0;
   border:6rpx #fff solid;
+  overflow: hidden;
 }
 .nickname{  
   font-family: '幼圆';

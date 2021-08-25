@@ -211,7 +211,7 @@ Page({
     let data = {
       rid:that.data.id,
       msg:that.data.detail.msg,
-      pic:that.data.detail.imgs[0],
+      pic:that.data.detail.imgs[0].cover,
       oid:that.data.oid||null,
       otherName:that.data.otherName||"",
       content:that.data.content||"",

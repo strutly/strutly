@@ -64,6 +64,16 @@
 .image-two{
   height: 320rpx;
 }
+.image-video:before {
+  content: "";
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  height: 0;
+  border-style: solid; 
+  border-width: 1em 0 1em 2em;
+  border-color: transparent transparent transparent #fff;
+}
 .card-handles{
   text-align: right;
   margin-top: 24rpx;
