@@ -43,7 +43,16 @@ Page({
     let id = that.data.id;
     let res = await api.recordDetail({id:id});
     if(res.data!=null){
+      let detail = res.data;
+      let imgs=[];
+      detail.imgs.forEach(img=>{
+        if(img.type==0){
+          imgs.push(img.url)
+        }
+      })
+      console.log(imgs);
       that.setData({
+        imgs:imgs,
         detail:res.data,
         likes:res.data.counts[1]||[],
         replys:res.data.counts[2]||[],
@@ -165,7 +174,7 @@ Page({
   onShareAppMessage: function (res) {
     return {
       title: 'Baby-Record',
-      path: '/pages/index/index'
+      path: '/pages/index/detail?id='+that.data.id
     }
   },
   onShareTimeline:function(res){
@@ -179,7 +188,7 @@ Page({
     var current = e.target.dataset.src;
     wx.previewImage({
       current: current, // 当前显示图片的http链接  
-      urls: [current] // 需要预览的图片http链接列表  
+      urls: that.data.imgs // 需要预览的图片http链接列表  
     })
   },
   userHome(e){
